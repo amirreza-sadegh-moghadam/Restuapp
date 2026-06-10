@@ -80,7 +80,7 @@ void customer::add_order(orders* o)
 {
 	this->corders.push_back(o);
 }
-orders::orders(int id,int customer_id,int date,string status) : id(id), customer_id(customer_id),date(date), status(status){}
+orders::orders(int id,int customer_id,int date,string status,int restaurant_id) : id(id), customer_id(customer_id),date(date), status(status),restaurant_id(restaurant_id){}
 double customer::total_price()
 {
 	double price = 0;
@@ -107,4 +107,12 @@ void customer::set_id(int id)
 void orders::set_id(int id)
 {
 	this->id = id; 
+}
+void orders::set_rest_id(int id)
+{
+	this->restaurant_id = id;
+}
+int orders::get_rest_id()
+{
+	return restaurant_id;
 }

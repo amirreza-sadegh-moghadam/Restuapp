@@ -69,7 +69,9 @@ void data::create_order()
 	"id INTEGER PRIMARY KEY AUTOINCREMENT,"
 	"customer_id INTEGER,"
 	"date INTEGER,"
-	"status TEXT);";
+	"status TEXT,"
+	"restaurant_id INTEGER" 
+	");";
 	sqlite3_exec(db,order_data,nullptr,nullptr,nullptr);
 }
 void data::create_order_item()

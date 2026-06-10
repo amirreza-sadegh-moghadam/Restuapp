@@ -11,17 +11,20 @@ using namespace std;
 class orders
 {
 	public:
-		orders(int,int,int,string);
+		orders(int,int,int,string,int);
 		void add_item(item*);
 		void del_item(int id);
 		void show_order();
 		void set_customer_id(int );
 		int get_customer_id();
+		void set_id(int);
 		int get_id();
 		int get_date();
 		string get_status();
 		vector<item*>& get_items();
 		double total_price();
+		void set_rest_id(int);
+		int get_rest_id();
 
 	private:
 		int id;
@@ -29,6 +32,7 @@ class orders
 		vector<item*> list;
 		int date;
 		string status;
+		int restaurant_id;
 
 };
 class customer{

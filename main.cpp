@@ -104,7 +104,7 @@ void customer_panel(sqlite3* db)
 		cout << "\n MENU:" << endl;
 		choose->show_menu();
 
-		orders* newone = new orders(0, moshtary->get_id(), 14040506, "dar hal amade sazi");
+		orders* newone = new orders(0, moshtary->get_id(), 14040506, "dar hal amade sazi",choose->get_id());
 
 		int answer3;
 		cout << "\n1. add item" << endl;
@@ -348,7 +348,7 @@ void restaurant_manager_panel(sqlite3* db)
 			cin >> c_id;
 			if ( c_id != 0)
 			{
-				vector<orders*> orders = orderado.getCustomerOrders(c_id);
+				vector<orders*> orders = orderado.getCustomerOrdersR(c_id,myrest->get_id());
 				for ( int i = 0; i < orders.size(); i++)
 				{
 					cout << "order id: " << orders[i]->get_id()
@@ -382,8 +382,8 @@ void restaurant_manager_panel(sqlite3* db)
 void program_manager_panel(sqlite3* db)
 {
 	restaurantDAO restdao(db);
-	customerADO customerado(db);
-
+	customerADO customerado(db);	
+	orderDAO orderdao(db);
 	int answer;
 	cout << "\nWhat you want now?" << endl;
 	cout << "1. amount of sell (all orders count)" << endl;
@@ -399,11 +399,30 @@ void program_manager_panel(sqlite3* db)
 		if ( answer == 1)
 		{
 			vector<restaurant*> rests = restdao.getallrestaurants();
+			//tedad sefaresh hay kol
+			int ORs = 0;
+			//  mablagh sefaresh haye kol
+			int payoutas = 0;
 			cout << "we have " << rests.size() << " restaurants in system " << endl;
 			for ( int i = 0; i < rests.size(); i++) 
 			{
-				rests[i]->show_information();
+				//tedad sefaresh haye har restauran
+				int OR = 0;
+				//  mablagh sefaresh haye har restaurant
+				int payouta = 0;
+					vector <orders*> order_r = orderdao.getrestaurantOrders(rests[i]->get_id());
+					for ( int z = 0; z <order_r.size();z++)
+					{
+						payouta += order_r[z]->total_price();
+						OR +=1;
+					}
+				cout<<"Name : " << rests[i]->get_name() << " Count of orders :  " << OR << " all the payouts : " << payouta<<endl;
+				payoutas += payouta;
+				ORs += OR;
 			}
+			cout << "Overall Statistics " <<  endl;
+			cout<< "Total orders : " << ORs<<endl;
+			cout<< "Total payout : "<<payoutas<<endl;
 			for ( int i = 0; i < rests.size(); i++) 
 			{
 				delete rests[i];
