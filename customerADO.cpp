@@ -98,3 +98,10 @@ void customerADO::delete_customer(int id)
 	"DELETE FROM CUSTOMER WHERE id = " +  to_string(id) + ";";
 	sqlite3_exec(db,sqll.c_str(),nullptr,nullptr,nullptr);
 }
+void customerADO::update_Debt(int id,double price )
+{
+	string sql =
+		"UPDATE CUSTOMER SET Debt = Debt + " + to_string(price) +" WHERE id = " + to_string(id);
+
+	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+}

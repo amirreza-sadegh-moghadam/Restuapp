@@ -176,9 +176,8 @@ void customer_panel(sqlite3* db)
 		}
 
 		orderado.addOrder(newone);
-		cout << "order confirmed! we are preparing your food\n just wait now!" << endl;
 		cout<< " Order ID : " << newone->get_id() << " status : " << newone->get_status();
-
+		customerado.update_Debt(moshtary->get_id(),newone->total_price());
 		delete newone;
 		for ( int i = 0; i < rests.size(); i++) 
 		{
