@@ -243,3 +243,38 @@ void restaurantDAO::delete_rest(int id)
 	"DELETE FROM RESTAURANT WHERE id = " + to_string(id) + ";";
 	sqlite3_exec(db,sqll.c_str(),nullptr,nullptr,nullptr);
 }
+void restaurantDAO::update_name(int id, string name)
+{
+	string sql =
+		"UPDATE RESTAURANT SET name = '" + name +"' WHERE id = " + to_string(id);
+
+	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+}
+void restaurantDAO::update_phone(int id, string phone)
+{
+	string sql =
+		"UPDATE RESTAURANT SET phone = '" + phone +"' WHERE id = " + to_string(id);
+
+	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+}
+void restaurantDAO::update_status(int id, bool status)
+{
+	string sql =
+		"UPDATE RESTAURANT SET status = " + to_string(status) +" WHERE id = " + to_string(id);
+
+	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+}
+void restaurantDAO::update_description(int id, string description)
+{
+	string sql =
+		"UPDATE RESTAURANT SET description = '" + description +"' WHERE id = " + to_string(id);
+
+	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+}
+void restaurantDAO::update_location(int id, string location)
+{
+	string sql =
+		"UPDATE RESTAURANT SET location = '" + location +"' WHERE id = " + to_string(id);
+
+	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+}

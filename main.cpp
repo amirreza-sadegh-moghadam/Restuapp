@@ -231,10 +231,11 @@ void restaurant_manager_panel(sqlite3* db)
 	cout << "3. add item to menu" << endl;
 	cout << "4. delete item from menu" << endl;
 	cout << "5. show orders" << endl;
-	cout << "6. exit" << endl;
+	cout<< "6.change restaurant info"<<endl;
+	cout << "7. exit" << endl;
 	cin >> answer;
 
-	while ( answer != 6)
+	while ( answer != 7)
 	{
 		if ( answer == 1)
 		{
@@ -257,7 +258,7 @@ void restaurant_manager_panel(sqlite3* db)
 			getline(cin,type);
 			while ( type != "food" && type !="drink")
 			{
-				cout<<" invalid input, please just input word 'food' or 'drink'";
+				cout<<" invalid input, please just input word 'food' or 'drink'"<<endl;
 				getline(cin,type);
 			}
 			cout << "enter price: ";
@@ -296,7 +297,7 @@ void restaurant_manager_panel(sqlite3* db)
 					cin >> value;
 					
 				}
-			cout << "is exist? (1/0): 1.YES 2.NO ";
+			cout << "is exist? (1/0): 1.YES 0.NO ";
 			int exist;
 			while (true)
 			{
@@ -304,15 +305,15 @@ void restaurant_manager_panel(sqlite3* db)
 
     			if (cin.fail())
     			{
-        			cout << "invalid input (only 1 or 2)\n";
+        			cout << "invalid input (only 1 or 0)\n"<<endl;
        				cin.clear();
         			cin.ignore(numeric_limits<streamsize>::max(), '\n');
         			continue;
     			}
 
-		   if (exist == 1 || exist == 2)
+		   if (exist == 1 || exist == 0)
        		break;
-			cout << "invalid input (only 1 or 2)\n";
+			cout << "invalid input (only 1 or 0)\n";
 			}
 
 			item* newitem = nullptr;
@@ -362,17 +363,104 @@ void restaurant_manager_panel(sqlite3* db)
 				}
 			}
 		}
+		else if ( answer == 6)
+		{
+			int javab;
+			myrest->show_information();
+			int rest_id = myrest->get_id();
+			while ( true)
+			{
+
+				cout<< "What would you like to change?"<<endl;
+				cout<< "1.name"<<endl;
+				cout<<"2.phone"<<endl;
+				cout<<"3.status"<<endl;
+				cout<<"4.description"<<endl;
+				cout<<"5.location"<<endl;
+				cout<<"6.exist"<<endl;
+				cin >> javab;
+				if ( javab == 1)
+				{
+					string name;
+					cout << " input new name : "<< endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					getline(cin,name);
+					restdao.update_name(rest_id,name);
+					myrest = restdao.getrestaurant(id);
+				}
+				else if ( javab == 2)
+				{
+					string phone;
+					cout << "input new phone number : "<< endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					getline(cin,phone);
+					restdao.update_phone(rest_id,phone);
+					myrest = restdao.getrestaurant(id);
+				}
+				else if ( javab == 3)
+				{
+					bool status;
+					cout << " input new status of restaurant ( 1.ON / 0.OFF)"<<endl;
+					while (true)
+					{
+    					cin >> status;
+
+    				if (cin.fail())
+    				{
+        				cout << "invalid input (only 1 or 0)\n"<<endl;
+       					cin.clear();
+        				cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        				continue;
+    				}
+
+		   			if (status == 1 || status == 0)
+       					break;
+					cout << "invalid input (only 1 or 0)\n";
+					}
+					restdao.update_status(rest_id,status);
+					myrest = restdao.getrestaurant(id);
+					
+				}
+				else if ( javab == 4)
+				{
+					string description;
+					cout << "input new description"<<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					getline(cin,description);
+					restdao.update_description(rest_id,description);
+					myrest = restdao.getrestaurant(id);
+				}
+				else if ( javab == 5)
+				{
+					string location;
+					cout<< "input new location "<<endl;
+					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					getline(cin,location);
+					restdao.update_location(rest_id,location);
+					myrest = restdao.getrestaurant(id);
+				}
+				else if ( javab == 6)
+					break;
+				else
+				{
+					cout << " invalid input!";
+				}
+			
+			}
+			
+		}
 		else
 		{
 			cout << "this input is invalid " << endl;
-		}
+		} 
 
 		cout << "\n1. show restaurant info" << endl;
 		cout << "2. show menu" << endl;
 		cout << "3. add item to menu" << endl;
 		cout << "4. delete item from menu" << endl;
 		cout << "5. show orders" << endl;
-		cout << "6. exit" << endl;
+		cout<<"6.change restaurant info"<<endl;
+		cout << "7. exit" << endl;
 		cin >> answer;
 	}
 
