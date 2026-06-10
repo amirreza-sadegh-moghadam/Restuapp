@@ -158,3 +158,39 @@ void itemDAO::delete_item(int id)
 	sqlite3_exec(db,sql.c_str(),nullptr,nullptr,nullptr);
 	
 }
+void itemDAO::update_name(int id,string name)
+{
+	string sql = 
+	"UPDATE ITEM SET name = '" + name +"' WHERE id = " + to_string(id);
+	sqlite3_exec(db,sql.c_str(),nullptr,nullptr,nullptr);
+}
+void itemDAO::update_price(int id,double price)
+{
+	string sql = 
+	"UPDATE ITEM SET price = " + to_string(price) +" WHERE id = " + to_string(id);
+	sqlite3_exec(db,sql.c_str(),nullptr,nullptr,nullptr);
+}
+void itemDAO::update_description(int id,string description)
+{
+	string sql = 
+	"UPDATE ITEM SET description = '" + description +"' WHERE id = " + to_string(id);
+	sqlite3_exec(db,sql.c_str(),nullptr,nullptr,nullptr);
+}
+void itemDAO::update_time(int id,int time)
+{
+	string sql = 
+	"UPDATE ITEM SET time = " + to_string(time) +" WHERE id = " + to_string(id);
+	sqlite3_exec(db,sql.c_str(),nullptr,nullptr,nullptr);
+}
+void itemDAO::update_value(int id,int value)
+{
+	string sql = 
+	"UPDATE ITEM SET value = " + to_string(value) +" WHERE id = " + to_string(id);
+	sqlite3_exec(db,sql.c_str(),nullptr,nullptr,nullptr);
+}
+void itemDAO::update_exist(int id,bool exist)
+{
+	string sql = 
+	"UPDATE ITEM SET exist = " + to_string(exist) +" WHERE id = " + to_string(id);
+	sqlite3_exec(db,sql.c_str(),nullptr,nullptr,nullptr);
+}
