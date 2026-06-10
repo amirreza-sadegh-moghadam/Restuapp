@@ -23,6 +23,9 @@ void orderDAO::addOrder(orders* o)
     	to_string(order_id)+"," + to_string(items[i]->get_id()) + ",1);";
     	sqlite3_exec(db,sqll.c_str(),nullptr,nullptr,nullptr);
 	}
+	int id = sqlite3_last_insert_rowid(db);
+	o->set_id(id);
+	
 }
 orders* orderDAO::getOrder(int id)
 {

@@ -158,12 +158,13 @@ void customer_panel(sqlite3* db)
 
 		orderado.addOrder(newone);
 		cout << "order confirmed! we are preparing your food\n just wait now!" << endl;
+		cout<< " Order ID : " << newone->get_id() << " status : " << newone->get_status();
 
 		delete newone;
 		for ( int i = 0; i < rests.size(); i++) 
 		{
 			delete rests[i];
-		};
+		}
 	}
 
 	if ( answer2 == 2)
@@ -329,12 +330,11 @@ void restaurant_manager_panel(sqlite3* db)
 		{
 			int itemid;
 			myrest->show_menu();
-			cout << "enter item id to delete :  "<<;
+			cout << "enter item id to delete :  ";
 			cin >> itemid;
 			itemdao.delete_item(itemid);
 			myrest = restdao.getrestaurant(resid);
 			cout << "item deleted bro!" << endl;
-			
 		}
 		else if ( answer == 5)
 		{
