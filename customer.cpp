@@ -30,6 +30,7 @@ void orders::show_order()
 	{
 		list[i]->get_information();
 	}
+	cout<<"\n"<< "payout : " << total_price()<<endl;
 }
 void customer::set_Debt(double debt)
 {
@@ -102,4 +103,8 @@ double orders::total_price()
 void customer::set_id(int id)
 {
 	this->id = id;
+}
+void orders::set_id(int id)
+{
+	this->id = id; 
 }
