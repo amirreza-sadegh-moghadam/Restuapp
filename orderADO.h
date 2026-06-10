@@ -19,6 +19,7 @@ public:
     void delete_order(int);
     vector<orders*> getCustomerOrdersR(int ,int);
     vector<orders*> getrestaurantOrders(int );
+    void update_status(int,string);
 };
 
 #endif

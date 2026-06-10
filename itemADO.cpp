@@ -188,7 +188,7 @@ void itemDAO::update_value(int id,int value)
 	"UPDATE ITEM SET value = " + to_string(value) +" WHERE id = " + to_string(id);
 	sqlite3_exec(db,sql.c_str(),nullptr,nullptr,nullptr);
 }
-void itemDAO::update_exist(int id,bool exist)
+void itemDAO::update_exist(int id, bool exist)
 {
 	string sql = 
 	"UPDATE ITEM SET exist = " + to_string(exist) +" WHERE id = " + to_string(id);

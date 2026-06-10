@@ -10,9 +10,24 @@
 #include "orderADO.h"
 #include "restmg.h"
 #include <limits>
+#include <ctime>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
+
+
+int get_current_date()
+{
+    time_t now = std::time(nullptr);
+    tm tm = *std::localtime(&now);
+
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y%m%d");
+
+    return std::stoi(oss.str());
+}
 void customer_panel(sqlite3* db)
 {
 	customerADO customerado(db);
@@ -73,8 +88,11 @@ void customer_panel(sqlite3* db)
 		cout << "\nplease choose your restaurant :" << endl;
 		for ( int i = 0; i < rests.size(); i++)
 		{
-			rests[i]->show_information();
-			cout << "\n";
+			if(rests[i]->get_status() == true )
+			{
+				rests[i]->show_information();
+				cout << "\n";
+			}
 		}
 		cout << "enter restaurant id: ";
 		int resid;
@@ -103,8 +121,9 @@ void customer_panel(sqlite3* db)
 
 		cout << "\n MENU:" << endl;
 		choose->show_menu();
-
-		orders* newone = new orders(0, moshtary->get_id(), 14040506, "dar hal amade sazi",choose->get_id());
+		// tarikh bar asas tarikh dasgah karbar tanzim misheh!
+		int date = get_current_date();
+		orders* newone = new orders(0, moshtary->get_id(), date, "dar hal amade sazi",choose->get_id());
 
 		int answer3;
 		cout << "\n1. add item" << endl;
@@ -216,13 +235,13 @@ void restaurant_manager_panel(sqlite3* db)
 	show_rs(db);
 	cin >> resid;
 	restaurant* myrest = restdao.getrestaurant(resid);
-	int rest_id = myrest->get_id();
 	while ( myrest == nullptr)
 	{
 		cout << "we dont have this id, i guess you should try it again: ";
 		cin >> resid;
 		myrest = restdao.getrestaurant(resid);
 	}
+	int rest_id = myrest->get_id();
 	cout << "welcome " << myrest->get_name() << " manager!" << endl;
 
 	int answer;
@@ -234,10 +253,11 @@ void restaurant_manager_panel(sqlite3* db)
 	cout << "5. show orders" << endl;
 	cout<< "6.change restaurant info"<<endl;
 	cout<<"7.change menu items"<<endl;
-	cout << "8. exit" << endl;
+	cout<<"8.change the status of orders"<<endl;
+	cout << "9. exit" << endl;
 	cin >> answer;
 
-	while ( answer != 8)
+	while ( answer != 9)
 	{
 		if ( answer == 1)
 		{
@@ -326,6 +346,7 @@ void restaurant_manager_panel(sqlite3* db)
 
 			itemdao.add_item(newitem, resid);
 			cout << name << " added to menu bro!" << endl;
+			delete myrest;
 			myrest = restdao.getrestaurant(resid);
 			delete newitem;
 		}
@@ -336,6 +357,7 @@ void restaurant_manager_panel(sqlite3* db)
 			cout << "enter item id to delete :  ";
 			cin >> itemid;
 			itemdao.delete_item(itemid);
+			delete myrest;
 			myrest = restdao.getrestaurant(resid);
 			cout << "item deleted bro!" << endl;
 		}
@@ -387,6 +409,7 @@ void restaurant_manager_panel(sqlite3* db)
 					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					getline(cin,name);
 					restdao.update_name(rest_id,name);
+					delete myrest;
 					myrest = restdao.getrestaurant(rest_id);
 				}
 				else if ( javab == 2)
@@ -396,6 +419,7 @@ void restaurant_manager_panel(sqlite3* db)
 					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					getline(cin,phone);
 					restdao.update_phone(rest_id,phone);
+					delete myrest;
 					myrest = restdao.getrestaurant(rest_id);
 				}
 				else if ( javab == 3)
@@ -419,6 +443,7 @@ void restaurant_manager_panel(sqlite3* db)
 					cout << "invalid input (only 1 or 0)\n";
 					}
 					restdao.update_status(rest_id,status);
+					delete myrest;
 					myrest = restdao.getrestaurant(rest_id);
 					
 				}
@@ -429,6 +454,7 @@ void restaurant_manager_panel(sqlite3* db)
 					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					getline(cin,description);
 					restdao.update_description(rest_id,description);
+					delete myrest;
 					myrest = restdao.getrestaurant(rest_id);
 				}
 				else if ( javab == 5)
@@ -438,6 +464,7 @@ void restaurant_manager_panel(sqlite3* db)
 					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					getline(cin,location);
 					restdao.update_location(rest_id,location);
+					delete myrest;
 					myrest = restdao.getrestaurant(rest_id);
 				}
 				else if ( javab == 6)
@@ -478,7 +505,7 @@ void restaurant_manager_panel(sqlite3* db)
 				}
 				if ( item_id ==0)
 				{
-					khoste == 7;
+					khoste = 7;
 				}
 				if ( khoste == 1)
 				{
@@ -487,6 +514,7 @@ void restaurant_manager_panel(sqlite3* db)
 					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					getline(cin,name2);
 					itemdao.update_name(item_id,name2);
+					delete myrest;
 					myrest = restdao.getrestaurant(rest_id);
 				}
 				else if ( khoste == 2)
@@ -502,6 +530,7 @@ void restaurant_manager_panel(sqlite3* db)
 						cin >> price2;
 					}
 					itemdao.update_price(item_id,price2);
+					delete myrest;
 					myrest = restdao.getrestaurant(rest_id);
 				}
 				else if ( khoste == 3)
@@ -511,6 +540,7 @@ void restaurant_manager_panel(sqlite3* db)
 					cin.ignore(numeric_limits<streamsize>::max(), '\n');
 					getline(cin,description2);
 					itemdao.update_description(item_id,description2);
+					delete myrest;
 					myrest = restdao.getrestaurant(rest_id);
 				}
 				else if ( khoste == 4)
@@ -526,13 +556,14 @@ void restaurant_manager_panel(sqlite3* db)
 						cin >> time2;
 					}
 					itemdao.update_time(item_id,time2);
+					delete myrest;
 					myrest = restdao.getrestaurant(rest_id);
 				}
 				else if ( khoste == 5)
 				{
 					double value2;
-					cin >> value2;
 					cout<< "input the new value : ";
+					cin >> value2;
 					while ( cin.fail())
 					{
 						cout<<"please input numbers!";
@@ -541,6 +572,7 @@ void restaurant_manager_panel(sqlite3* db)
 						cin >> value2;
 					}
 					itemdao.update_value(item_id,value2);
+					delete myrest;
 					myrest = restdao.getrestaurant(rest_id);
 				}
 				else if ( khoste == 6)
@@ -564,6 +596,7 @@ void restaurant_manager_panel(sqlite3* db)
 					cout << "invalid input (only 1 or 0)\n";
 					}
 					itemdao.update_exist(item_id,exist);
+					delete myrest;
 					myrest = restdao.getrestaurant(rest_id);
 					
 				}
@@ -575,6 +608,35 @@ void restaurant_manager_panel(sqlite3* db)
 				}
 			}
 		}
+		else if ( answer == 8)
+		{
+			vector <orders*> orderha = orderado.getrestaurantOrders(rest_id);
+			for ( int i = 0; i< orderha.size();i++)
+			{
+				cout << " id : " << orderha[i]->get_id() <<  " status : " << orderha[i]->get_status();
+			}
+			cout <<" choose order : ";
+			int order_id;
+			int flag = 0;
+			do
+			{
+				cin >> order_id;
+				for ( int i = 0; i<orderha.size();i++)
+				{
+					if ( orderha[i]->get_id() == order_id)
+						flag = 1;
+				}
+			}while ( flag == 0 );
+			string status;
+			cout<< "input new status : "<<endl;
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			getline(cin,status);
+			orderado.update_status(order_id,status);
+			for ( int i =0; i<orderha.size();i++)
+				delete orderha[i];
+			orderha = orderado.getrestaurantOrders(rest_id);
+		}
+			
 		else
 		{
 			cout << "this input is invalid " << endl;
@@ -587,10 +649,12 @@ void restaurant_manager_panel(sqlite3* db)
 		cout << "5. show orders" << endl;
 		cout<<"6.change restaurant info"<<endl;
 		cout<<"7.change menu items"<<endl;
-		cout << "8. exit" << endl;
+		cout<<"8.change the status of orders"<<endl;
+		cout << "9. exit" << endl;
 		cin >> answer;
 	}
-
+	for ( int i = 0; i < rests.size();i++)
+		delete rests[i];
 	delete myrest;
 }
 
@@ -634,6 +698,10 @@ void program_manager_panel(sqlite3* db)
 				cout<<"Name : " << rests[i]->get_name() << " Count of orders :  " << OR << " all the payouts : " << payouta<<endl;
 				payoutas += payouta;
 				ORs += OR;
+				for ( int i=0; i<order_r.size();i++)
+				{
+					delete order_r[i];
+				}
 			}
 			cout << "Overall Statistics " <<  endl;
 			cout<< "Total orders : " << ORs<<endl;
@@ -645,27 +713,36 @@ void program_manager_panel(sqlite3* db)
 		}
 		else if ( answer == 2)
 		{
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			cout << "enter name: ";
 			string name;
-			cin >> name;
+			getline(cin,name);
 			cout << "enter location: ";
 			string loc;
-			cin >> loc;
+			getline(cin,loc);
 			cout << "enter phone: ";
 			string phone;
-			cin >> phone;
+			getline(cin,phone);
 			cout << "enter description: ";
 			string description;
-			cin >> description;
+			getline(cin,description);
 			cout << "enter prepare time (minutes): ";
 			int time;
 			cin >> time;
-
+			while ( cin.fail())
+			{
+					cout<<"please input numbers!";
+					cin.clear();
+  					cin.ignore(numeric_limits<streamsize>::max(), '\n');
+					cin >> time;
+					
+			}
 			menu* m = new menu();
 			restaurant* new_r = new restaurant(*m, 0, time, true, loc, phone, description, name);
 			restdao.addrestaurant(*new_r);
 			cout << name << " added to system :)" << endl;
 			delete new_r;
+			delete m;
 		}
 		else if ( answer == 3)
 		{
@@ -681,6 +758,7 @@ void program_manager_panel(sqlite3* db)
 			else
 			{
 				r->set_status(true);
+				restdao.update_status(id,true);
 				cout << r->get_name() << " is now on bro!" << endl;
 			}
 			delete r;
@@ -699,6 +777,7 @@ void program_manager_panel(sqlite3* db)
 			else
 			{
 				r->set_status(false);
+				restdao.update_status(id,false);
 				cout << r->get_name() << " is now OFF bro!" << endl;
 			}
 			delete r;

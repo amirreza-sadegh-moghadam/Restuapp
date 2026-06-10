@@ -137,12 +137,12 @@ void orderDAO::delete_order(int id)
 	sqlite3_exec(db,sqll.c_str(),nullptr,nullptr,nullptr);
 }
 
-vector<orders*> orderDAO::getrestaurantOrders(int restaurant_id)
+vector<orders*> orderDAO::getrestaurantOrders(int rest_id)
 {
 	vector<orders*> orderha;
 	orders* o;
 	string sql = 
-	"SELECT * FROM ORDERS WHERE restaurant_id = " + to_string(restaurant_id)+";";
+	"SELECT * FROM ORDERS WHERE restaurant_id = " + to_string(rest_id)+";";
 	sqlite3_stmt* stmt;
 	sqlite3_prepare_v2(db,sql.c_str(),-1,&stmt,nullptr);
 	while ( sqlite3_step(stmt) == SQLITE_ROW)
@@ -229,4 +229,10 @@ vector<orders*> orderDAO::getCustomerOrdersR(int customer_id,int restaurant_id)
 	}
 	sqlite3_finalize(stmt);
 	return orderha;
+}
+void orderDAO::update_status(int id,  string status)
+{
+	string sql = 
+	"UPDATE ORDERS SET status = '" +status +"' WHERE id = " + to_string(id);
+	sqlite3_exec(db,sql.c_str(),nullptr,nullptr,nullptr);
 }
