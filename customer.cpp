@@ -16,12 +16,12 @@ void orders::del_item(int id)
 	{
 		if ( list[i]->get_id() == id)
 		{
-			cout<< " this item deleted bro!";
+			cout<< " this item deleted bro!"<<endl;
 			list.erase(list.begin()+i);
 			return;
 		}
 	}
-	cout<< " you already dont have this in your order bro!";
+	cout<< " you already dont have this in your order bro!"<<endl;
 }
 void orders::show_order()
 {

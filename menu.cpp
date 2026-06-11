@@ -27,7 +27,6 @@ void menu::delete_item(int id)
 			return;
 		}
 	}
-		cout<< " we dont have this item here!";
 }
 void menu::show_menu()
 {
@@ -45,7 +44,6 @@ item* menu::find_id(int id)
 	{
 		if ( items[i]->get_id()== id)
 		{
-			cout << "we find " << items[i]->get_name();
 			return items[i];
 		}
 	}

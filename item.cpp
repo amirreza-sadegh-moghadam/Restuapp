@@ -66,7 +66,7 @@ drink::drink(int id,string name ,string type, double price,string description,in
 	item(id,name,type,price,description,time,value,exist){}
 void drink::get_information()
 {
-	cout<< "|| name : " <<get_name()<< " id : " << get_id() << " price : " << get_price() << " needed time : "<< get_time() << " volume : " << get_value() << " is exist? : ";
+	cout<< "|| name : " <<get_name()<< "| id : " << get_id() << "| price : " << get_price() << "| needed time : "<< get_time() << "| volume : " << get_value() << "| is exist? : ";
 	cout<< (get_exist()? " YES " : "NO");
 	cout<<"\n"<< "description : "<<"\n"<<get_description()<<"\n";
 };
@@ -74,7 +74,7 @@ food::food(int id,string name ,string type, double price,string description,int 
 	item(id,name,type,price,description,time,value,exist){}
 void food::get_information()
 {
-	cout<< "|| name : " << get_name()<< " id : " << get_id() << " price : " << get_price() << " needed time : "<< get_time() << " Quantity: " << get_value() << " is exist? : ";
+	cout<< "|| name : " << get_name()<< "| id : " << get_id() << "| price : " << get_price() << "| needed time : "<< get_time() << "| Quantity: " << get_value() << "| is exist? : ";
 	cout<< (get_exist()? " YES " : "NO");
 	cout<<"\n"<< "description : "<<"\n"<<get_description()<<"\n";
 };

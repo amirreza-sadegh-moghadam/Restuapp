@@ -77,6 +77,6 @@ void restaurant::set_name(string name)
 }
 void restaurant::show_information()
 {
-	cout<< "||" << " name :  " << name << " id "<< id << " phone : " << phone << " status : " << status << "description : " << description << " location : " 
+	cout<< "||" << " name :  " << name << "| id "<< id << "| phone : " << phone << "| status : " << status << "| description : " << description << "| location : " 
 	<< location;
 }
