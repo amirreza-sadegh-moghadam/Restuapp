@@ -15,7 +15,23 @@
 #include <iomanip>
 
 using namespace std;
+#include <limits>
+#include <iostream>
+using namespace std;
 
+template <typename T>
+T int_eror(const string& errorMsg) {
+    T value;
+    cin >> value;
+    while (cin.fail())
+	{
+        cout << errorMsg << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> value;
+    }
+    return value;
+}
 void pause()
 {
 	cout<< " please enter to countinue!";
@@ -26,11 +42,11 @@ void pause()
 
 int get_current_date()
 {
-    time_t now = std::time(nullptr);
-    tm tm = *std::localtime(&now);
-    std::ostringstream oss;
-    oss << std::put_time(&tm, "%Y%m%d");
-    return std::stoi(oss.str());
+    time_t now = time(nullptr);
+    tm tm = *localtime(&now);
+    ostringstream oss;
+    oss << put_time(&tm, "%Y%m%d");
+    return stoi(oss.str());
 }
 void customer_panel(sqlite3* db)
 {
@@ -42,11 +58,11 @@ void customer_panel(sqlite3* db)
 	cout << "\n1. im a old user" << endl;
 	cout << "2. im a new one" << endl;
 	int answer;
-	cin >> answer;
+	answer = int_eror<int>("this input is invalid sweety!, please input 1 or 2" );
 	while ( answer != 1 && answer != 2)
 	{
-		cout << "this input is invalid sweety!, please input 1 or 2" << endl;
-		cin >> answer;
+		cout << "this input is invalid !, please input 1 or 2" << endl;
+		answer = int_eror<int>("this input is invalid , please input 1 or 2" );
 	}
 
 	customer* moshtary = nullptr;
@@ -56,7 +72,6 @@ void customer_panel(sqlite3* db)
 		cout << "enter your name bro: ";
 		string name;
 		cin >> name;
-		
 		customer* newcustomer = new customer(0, name, 0);
 		customerado.addcustomer(newcustomer);
 		cout << "welcome here! now you can login with your id:" << endl;
@@ -66,12 +81,12 @@ void customer_panel(sqlite3* db)
 
 	cout << "enter your id: ";
 	int id;
-	cin >> id;
+	id = int_eror<int>("this input is invalid , please input number" );
 	moshtary = customerado.getcustomer(id);
 	while ( moshtary == nullptr )
 	{
 		cout << "we dont have this id bro!, try it again: ";
-		cin >> id;
+		id = int_eror<int>("this input is invalid , please input numbers" );
 		moshtary = customerado.getcustomer(id);
 	}
 	while (true) 
@@ -83,11 +98,10 @@ void customer_panel(sqlite3* db)
 	cout << "1. New order" << endl;
 	cout << "2. show me old orders!" << endl;
 	cout << "3. exit" << endl;
-	cin >> answer2;
+	answer2 = int_eror<int>("this input is invalid , please input 1 or 2 or 3" );
 	while ( answer2 != 1 && answer2 != 2 && answer2 != 3)
 	{
-		cout << "this input is invalid sweety!, please input 1 or 2 or 3" << endl;
-		cin >> answer2;
+		answer2 = int_eror<int>("this input is invalid , please input 1 or 2 or 3" );
 	}
 
 	if ( answer2 == 1)
@@ -105,8 +119,7 @@ void customer_panel(sqlite3* db)
 		}
 		cout << "enter restaurant id: ";
 		int resid;
-		cin >> resid;
-
+		resid = int_eror<int>("this input is invalid , please input number" );
 		restaurant* choose = nullptr;
 		for ( int i = 0; i < rests.size(); i++)
 		{
@@ -118,7 +131,7 @@ void customer_panel(sqlite3* db)
 		while ( choose == nullptr || choose->get_status() == false)
 		{
 			cout << "we dont have this  restaurant bro!, try it again: ";
-			cin >> resid;
+			resid = int_eror<int>("this input is invalid , please input number" );
 			for ( int i = 0; i < rests.size(); i++)
 			{
 				if ( rests[i]->get_id() == resid)
@@ -139,7 +152,7 @@ void customer_panel(sqlite3* db)
 		cout << "2. remove item" << endl;
 		cout << "3. show my order" << endl;
 		cout << "4. confirm order!" << endl;
-		cin >> answer3;
+		answer3 = int_eror<int>("this input is invalid , please input 1 or 2 or 3 or 4" );
 
 		while ( answer3 != 4)
 		{
@@ -147,12 +160,12 @@ void customer_panel(sqlite3* db)
 			{
 				cout << "choose the item with input the id: ";
 				int itemid;
-				cin >> itemid;
+				itemid = int_eror<int>("this input is invalid , please input number" );
 				item* found = choose->find_id(itemid);
 				while ( found == nullptr)
 				{
 					cout << "we dont have this bro, try again: ";
-					cin >> itemid;
+					itemid = int_eror<int>("this input is invalid , please input number" );
 					found = choose->find_id(itemid);
 				}
 				newone->add_item(found);
@@ -163,9 +176,9 @@ void customer_panel(sqlite3* db)
 			{
 				cout << "enter the id's of item who you want to remove: ";
 				int itemid;
-				cin >> itemid;
+				itemid = int_eror<int>("this input is invalid , please input number" );
 				newone->del_item(itemid);
-				cout<<"Deleted succsfuelly total price : "<< newone->total_price();
+				cout<<" total price : "<< newone->total_price();
 			}
 			else if ( answer3 == 3)
 			{
@@ -183,7 +196,7 @@ void customer_panel(sqlite3* db)
 			cout << "2. remove item" << endl;
 			cout << "3. show my order" << endl;
 			cout << "4. confirm order!" << endl;
-			cin >> answer3;
+			answer3 = int_eror<int>("this input is invalid , please input 1 or 2 or 3 or 4" );
 		}
 
 		orderado.addOrder(newone);
@@ -224,6 +237,7 @@ void customer_panel(sqlite3* db)
 	{
 		cout<<"invalid input";
 	}
+	pause();
 }
 	delete moshtary;
 }
@@ -254,12 +268,12 @@ void restaurant_manager_panel(sqlite3* db)
 	vector<restaurant*> rests = restdao.getallrestaurants();
 	show_rs(db);
 	cout << "enter your restaurant id: "<<endl;
-	cin >> resid;
+	resid = int_eror<int>("this input is invalid sweety!, please input number" );
 	restaurant* myrest = restdao.getrestaurant(resid);
 	while ( myrest == nullptr)
 	{
 		cout << "we dont have this id, i guess you should try it again: ";
-		cin >> resid;
+		resid = int_eror<int>("this input is invalid sweety!, please input number" );
 		myrest = restdao.getrestaurant(resid);
 	}
 	int rest_id = myrest->get_id();
@@ -276,7 +290,7 @@ void restaurant_manager_panel(sqlite3* db)
 	cout<<"7.change menu items"<<endl;
 	cout<<"8.change the status of orders"<<endl;
 	cout << "9. exit" << endl;
-	cin >> answer;
+	answer = int_eror<int>("this input is invalid !, please input number" );
 
 	while ( answer != 9)
 	{
@@ -377,10 +391,10 @@ void restaurant_manager_panel(sqlite3* db)
 			int itemid;
 			myrest->show_menu();
 			cout << "enter item id to delete :  ";
-			cin >> itemid;
+			itemid = int_eror<int>("this input is invalid sweety!, please input number" );
 			while ( myrest->find_id(itemid) == nullptr)
 			{
-				cin >> itemid;
+				itemid = int_eror<int>("this input is invalid sweety!, please input number" );
 			}
 			itemdao.delete_item(itemid);
 			delete myrest;
@@ -397,7 +411,7 @@ void restaurant_manager_panel(sqlite3* db)
 			}
 			cout<<" input the id : ";
 			int c_id;
-			cin >> c_id;
+			 c_id =	int_eror<int>("this input is invalid sweety!, please input number" );
 			if ( c_id != 0)
 			{
 				vector<orders*> orders = orderado.getCustomerOrdersR(c_id,myrest->get_id());
@@ -429,7 +443,7 @@ void restaurant_manager_panel(sqlite3* db)
 				cout<<"4.description"<<endl;
 				cout<<"5.location"<<endl;
 				cout<<"6.exist"<<endl;
-				cin >> javab;
+				javab = int_eror<int>("this input is invalid sweety!, please input number" );
 				if ( javab == 1)
 				{
 					string name;
@@ -515,11 +529,11 @@ void restaurant_manager_panel(sqlite3* db)
 				cout<< "0. exit"<<endl;
 				cout<< "choose the item by id : ";
 				int item_id;
-				cin >> item_id;
+				 item_id = int_eror<int>("this input is invalid sweety!, please input number" );
 				while ( myrest->find_id(item_id) == nullptr && item_id != 0)
 				{
 					cout<< " we dont have this item!, try again"<<endl;
-					cin >> item_id;
+					 item_id = int_eror<int>("this input is invalid sweety!, please input number" );
 				}
 				if (item_id !=0)
 				{
@@ -531,7 +545,7 @@ void restaurant_manager_panel(sqlite3* db)
 				cout<<"5.value"<<endl;
 				cout<<"6.exist"<<endl;
 				cout<<"7.exit"<<endl;
-				cin>>khoste;
+				khoste = int_eror<int>("this input is invalid sweety!, please input number" );
 				}
 				if ( item_id ==0)
 				{
@@ -652,7 +666,7 @@ void restaurant_manager_panel(sqlite3* db)
 			int flag = 0;
 			do
 			{
-				cin >> order_id;
+				 order_id = int_eror<int>("this input is invalid sweety!, please input number" );
 				for ( int i = 0; i<orderha.size();i++)
 				{
 					if ( orderha[i]->get_id() == order_id)
@@ -665,7 +679,7 @@ void restaurant_manager_panel(sqlite3* db)
 			getline(cin,status);
 			orderado.update_status(order_id,status);
 			for ( int i =0; i<orderha.size();i++)
-				delete orderha[i];
+				delete orderha[i]; 
 			orderha = orderado.getrestaurantOrders(rest_id);
 		}
 			
@@ -683,7 +697,7 @@ void restaurant_manager_panel(sqlite3* db)
 		cout<<"7.change menu items"<<endl;
 		cout<<"8.change the status of orders"<<endl;
 		cout << "9. exit" << endl;
-		cin >> answer;
+		 answer = int_eror<int>("this input is invalid sweety!, please input number" );
 	}
 	for ( int i = 0; i < rests.size();i++)
 		delete rests[i];
@@ -704,7 +718,7 @@ void program_manager_panel(sqlite3* db)
 	cout << "4. turning off the restaurant" << endl;
 	cout << "5. show all users" << endl;
 	cout << "6. exit" << endl;
-	cin >> answer;
+	 answer = int_eror<int>("this input is invalid sweety!, please input number" );
 
 	while ( answer != 6)
 	{
@@ -782,7 +796,7 @@ void program_manager_panel(sqlite3* db)
 			cout << "enter restaurant id to turn on: "<<endl;
 			show_rs(db);
 			int id;
-			cin >> id;
+			 id = int_eror<int>("this input is invalid sweety!, please input number" );
 			restaurant* r = restdao.getrestaurant(id);
 			if ( r == nullptr)
 			{
@@ -801,7 +815,7 @@ void program_manager_panel(sqlite3* db)
 			cout << "enter restaurant id to turn off: "<<endl;
 			show_rs(db);
 			int id;
-			cin >> id;
+		 	id = int_eror<int>("this input is invalid sweety!, please input number" );
 			restaurant* r = restdao.getrestaurant(id);
 			if ( r == nullptr)
 			{
@@ -841,7 +855,7 @@ void program_manager_panel(sqlite3* db)
 		cout << "4. turning off the restaurant" << endl;
 		cout << "5. show all users" << endl;
 		cout << "6. exit" << endl;
-		cin >> answer;
+		answer = int_eror<int>("this input is invalid sweety!, please input number" );
 	}
 }
 
@@ -864,13 +878,23 @@ int main()
 	cout << "3.Program Manager" << endl;
 
 	int answer;
-	cin >> answer;
-	while ( answer != 1 && answer != 2 && answer != 3)
+	while (true)
 	{
-		cout << "this input is invalid , please input 1 or 2 or 3 ;)" << endl;
-		cin >> answer;
-	}
+    cin >> answer;
 
+    if (cin.fail())
+    {
+        cout << "Invalid input! Please enter 1, 2 or 3" << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        continue;
+    }
+
+    if (answer == 1 || answer == 2 || answer == 3)
+        break;
+
+    cout << "Invalid choice! Please enter 1, 2 or 3" << endl;
+	}
 	if ( answer == 1)
 	{
 		customer_panel(mydb);
