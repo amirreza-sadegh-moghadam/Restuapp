@@ -62,6 +62,7 @@ void item::set_exist(bool exist)
 {
 	this->exist = exist;
 }
+// drink baraye namayesh dorost vishegy motefavetash ba food yany volume ya hakm dorost shode
 drink::drink(int id,string name ,string type, double price,string description,int time,int value,bool exist) :
 	item(id,name,type,price,description,time,value,exist){}
 void drink::get_information()
@@ -70,6 +71,7 @@ void drink::get_information()
 	cout<< (get_exist()? " YES " : "NO");
 	cout<<"\n"<< "description : "<<"\n"<<get_description()<<"\n";
 };
+// food baraye namayesh dorost vishegy motefavetash ba drink yany Qauntity tarahy shode
 food::food(int id,string name ,string type, double price,string description,int time,int value,bool exist) :
 	item(id,name,type,price,description,time,value,exist){}
 void food::get_information()

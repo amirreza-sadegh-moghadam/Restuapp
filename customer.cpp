@@ -10,6 +10,7 @@ customer::~customer()
 		delete corders[i];
 	}
 }
+// baraye hazf item ha 
 void orders::del_item(int id)
 {
 	for ( int i =0 ; i < list.size();i++)
@@ -23,6 +24,7 @@ void orders::del_item(int id)
 	}
 	cout<< " you already dont have this in your order bro!"<<endl;
 }
+// etelat item haye sefaresh ra namayesh midahad va sepas mablagh oon ro elam mikonad
 void orders::show_order()
 {
 	cout<< "\n";
@@ -81,6 +83,7 @@ void customer::add_order(orders* o)
 	this->corders.push_back(o);
 }
 orders::orders(int id,int customer_id,int date,string status,int restaurant_id) : id(id), customer_id(customer_id),date(date), status(status),restaurant_id(restaurant_id){}
+// mablegh koly ke tamam sefaresh hara mohasebeh mikonad
 double customer::total_price()
 {
 	double price = 0;
@@ -91,6 +94,7 @@ double customer::total_price()
 	this->Debt = price;
 	return price;
 } 
+// mablagh yeck sefaresh ro ba jameh mablagh item hash be dast myard
 double orders::total_price()
 {
 	double price = 0;

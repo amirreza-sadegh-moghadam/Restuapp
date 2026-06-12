@@ -55,6 +55,7 @@ string restaurant::get_description()
 {
 	return this->description;
 }
+// az menu inj estefde mikonad ke khood menu ham  az tabeh namayesh etelat item hayesh komak migirad
 void restaurant::show_menu()
 {
 	list.show_menu();
@@ -67,6 +68,7 @@ void restaurant::del_menu(item* newone)
 {
 	this->list.delete_item(newone->get_id());
 }
+// baraye eror handeling 
 item* restaurant::find_id(int id)
 {
 	return list.find_id(id);
@@ -79,6 +81,7 @@ void restaurant::show_information()
 {
 	cout<< "||" << " name :  " << name << "| id "<< id << "| phone : " << phone << "| description : " << description << "| location : " 
 	<< location;
+	// in bakhsh bishtar baraye modir restauran karbord darad choon baraye moshtary faghat restauran haye baz namayesh dadae khohand shood
 	if ( status == 1)
 	{
 		cout<< "|status : On ";

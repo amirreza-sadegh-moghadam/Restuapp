@@ -8,7 +8,6 @@
 #include "itemADO.h"
 #include "data.h"
 #include "orderADO.h"
-#include "restmg.h"
 #include <limits>
 #include <ctime>
 #include <sstream>
@@ -18,7 +17,7 @@ using namespace std;
 #include <limits>
 #include <iostream>
 using namespace std;
-
+// baraye erorhandeling dar vroody haye gheir adday baraye moteghair haye adady
 template <typename T>
 T int_eror(const string& errorMsg) {
     T value;
@@ -32,6 +31,7 @@ T int_eror(const string& errorMsg) {
     }
     return value;
 }
+// baraye ijad tavaghof dar menu  , mah nashoedan sarieh etelahat az jolo cheshm mokhatab
 void pause()
 {
 	cout<< " please enter to countinue!";
@@ -39,7 +39,8 @@ void pause()
 	cin.get();
 	system("cls");
 }
-
+// zaman ra be soart sanieh daryaft mikonad sepas be model taghsim shode( sal, mah, rooz,saat,daghgige,sanie) tabdil mikonad sepas sal mah roozash 
+// ra dar yek string zakhire mikonad va dar akhar in string ra be int tabdil mikonad va return mikonad
 int get_current_date()
 {
     time_t now = time(nullptr);
@@ -48,6 +49,7 @@ int get_current_date()
     oss << put_time(&tm, "%Y%m%d");
     return stoi(oss.str());
 }
+// bakhs menu moshtary
 void customer_panel(sqlite3* db)
 {
 	 system("cls");
@@ -74,6 +76,7 @@ void customer_panel(sqlite3* db)
 		cin >> name;
 		customer* newcustomer = new customer(0, name, 0);
 		customerado.addcustomer(newcustomer);
+		// agar moshtary dar app ozve nabashad ba gereftan esm o, ozvsh mikonad va be oo yeck id midahad ke ba on mitavand vared shavad
 		cout << "welcome here! now you can login with your id:" << endl;
 		cout<<"BTW this is your id : " << newcustomer->get_id()<<endl;
 		delete newcustomer;
@@ -241,6 +244,7 @@ void customer_panel(sqlite3* db)
 }
 	delete moshtary;
 }
+// choon dar chanidn kaye main kole restauran ha namayesh dadaeh mishodand in tabeh barayesh neveshte shood
 void show_rs(sqlite3 * db)
 {
 	restaurantDAO restdao(db);
@@ -255,7 +259,7 @@ void show_rs(sqlite3 * db)
 			delete rests[i];
 	}
 }
-
+// bakhsh modiriat restauran
 void restaurant_manager_panel(sqlite3* db)
 {
 	 system("cls");
@@ -268,6 +272,7 @@ void restaurant_manager_panel(sqlite3* db)
 	vector<restaurant*> rests = restdao.getallrestaurants();
 	show_rs(db);
 	cout << "enter your restaurant id: "<<endl;
+	// dar inja eror handling kamel sorat migirad ke yeck vaght id cher o paert tavasot karbar vared nashavad
 	resid = int_eror<int>("this input is invalid sweety!, please input number" );
 	restaurant* myrest = restdao.getrestaurant(resid);
 	while ( myrest == nullptr)
@@ -311,6 +316,7 @@ void restaurant_manager_panel(sqlite3* db)
 			cin.ignore();
 			string name;
 			getline(cin,name);
+			// dar in paeein kamel baresi mishavad ke vroody chizi jooz food ya drink nabashad
 			cout << "enter type (food/drink): ";
 			string type;
 			getline(cin,type);
@@ -322,6 +328,7 @@ void restaurant_manager_panel(sqlite3* db)
 			cout << "enter price: ";
 			double price;
 			cin >> price;
+			// baraye check addady boodan vroody
 			while ( cin.fail())
 			{
 					cout<<"please input numbers!";
@@ -357,6 +364,7 @@ void restaurant_manager_panel(sqlite3* db)
 				}
 			cout << "is exist? (1/0): 1.YES 0.NO ";
 			int exist;
+			// dar paieen motmein mishavim ke chizi jooz 0 ya 1 tavasot karbar vared nashavad
 			while (true)
 			{
     			cin >> exist;
@@ -383,6 +391,7 @@ void restaurant_manager_panel(sqlite3* db)
 			itemdao.add_item(newitem, resid);
 			cout << name << " added to menu bro!" << endl;
 			delete myrest;
+			// baraye inke menu restauran dar ja berooz beshavad
 			myrest = restdao.getrestaurant(resid);
 			delete newitem;
 		}
@@ -392,6 +401,7 @@ void restaurant_manager_panel(sqlite3* db)
 			myrest->show_menu();
 			cout << "enter item id to delete :  ";
 			itemid = int_eror<int>("this input is invalid sweety!, please input number" );
+			// baresi mikonad ke karabar id chert vared nakardeh bashad
 			while ( myrest->find_id(itemid) == nullptr)
 			{
 				itemid = int_eror<int>("this input is invalid sweety!, please input number" );
@@ -412,6 +422,7 @@ void restaurant_manager_panel(sqlite3* db)
 			cout<<" input the id : ";
 			int c_id;
 			 c_id =	int_eror<int>("this input is invalid sweety!, please input number" );
+			 // bar asas id vroody kool sefaresh haye oon shakhs dar restauran modir ra namayesh midahad 
 			if ( c_id != 0)
 			{
 				vector<orders*> orders = orderado.getCustomerOrdersR(c_id,myrest->get_id());
@@ -423,6 +434,7 @@ void restaurant_manager_panel(sqlite3* db)
 					orders[i]->show_order();
 					cout << "---------------------" << endl;
 				}
+				//dar akhar pointer sefaresh ha ra pack mikonad
 				for ( int i = 0; i < orders.size(); i++) 
 				{
 					delete orders[i];
@@ -443,6 +455,7 @@ void restaurant_manager_panel(sqlite3* db)
 				cout<<"4.description"<<endl;
 				cout<<"5.location"<<endl;
 				cout<<"6.exist"<<endl;
+				// dar payan har if javab dobare myrest adres giri mishavad ta dar ja menu update shavad va in mozooh barkhat sorat girad
 				javab = int_eror<int>("this input is invalid sweety!, please input number" );
 				if ( javab == 1)
 				{
@@ -466,6 +479,7 @@ void restaurant_manager_panel(sqlite3* db)
 				}
 				else if ( javab == 3)
 				{
+					// check mikonad chizi jooz  0 ya 1 vared nashavad
 					bool status;
 					cout << " input new status of restaurant ( 1.ON / 0.OFF)"<<endl;
 					while (true)
@@ -545,6 +559,7 @@ void restaurant_manager_panel(sqlite3* db)
 				cout<<"5.value"<<endl;
 				cout<<"6.exist"<<endl;
 				cout<<"7.exit"<<endl;
+				// inja ham dar har if khoste va bad taghir myrest dobare odresdehy mishavad ta menu barkhat bashad 
 				khoste = int_eror<int>("this input is invalid sweety!, please input number" );
 				}
 				if ( item_id ==0)
@@ -622,6 +637,7 @@ void restaurant_manager_panel(sqlite3* db)
 				}
 				else if ( khoste == 6)
 				{
+					//dobareh check mishavad ke vroody chizy jozeh 0 ya 1 nabashad
 					bool exist;
 					cout << " input new exist of item ( 1.YES / 0.OFF)"<<endl;
 					while (true)
@@ -656,6 +672,7 @@ void restaurant_manager_panel(sqlite3* db)
 		}
 		else if ( answer == 8)
 		{
+			//dar inja modir restauran mitavand vazeeiat sefaresh ha ra taghir bedahad
 			vector <orders*> orderha = orderado.getrestaurantOrders(rest_id);
 			for ( int i = 0; i< orderha.size();i++)
 			{
@@ -703,7 +720,7 @@ void restaurant_manager_panel(sqlite3* db)
 		delete rests[i];
 	delete myrest;
 }
-
+// bakhsh modireyat barnameh
 void program_manager_panel(sqlite3* db)
 {
 	system("cls");
@@ -742,6 +759,7 @@ void program_manager_panel(sqlite3* db)
 						payouta += order_r[z]->total_price();
 						OR +=1;
 					}
+					// dar inja sefaresh ha va mablagh har restauran ra jooda namayesh midihad
 				cout<<"Name : " << rests[i]->get_name() << " Count of orders :  " << OR << " all the payouts : " << payouta<<endl;
 				payoutas += payouta;
 				ORs += OR;
@@ -750,6 +768,7 @@ void program_manager_panel(sqlite3* db)
 					delete order_r[i];
 				}
 			}
+			//dar inja jameh in do vishegy dar koll restauran ha ra namayesh midahad
 			cout << "Overall Statistics " <<  endl;
 			cout<< "Total orders : " << ORs<<endl;
 			cout<< "Total payout : "<<payoutas<<endl;
@@ -793,6 +812,7 @@ void program_manager_panel(sqlite3* db)
 		}
 		else if ( answer == 3)
 		{
+			//baraye rooshan kardan yeck restauran
 			cout << "enter restaurant id to turn on: "<<endl;
 			show_rs(db);
 			int id;
@@ -812,6 +832,7 @@ void program_manager_panel(sqlite3* db)
 		}
 		else if ( answer == 4)
 		{
+			// baraye khamoosh karadan yeck restauran ke sabab mishavad digar baraye moshtray namayesh nayabad
 			cout << "enter restaurant id to turn off: "<<endl;
 			show_rs(db);
 			int id;
@@ -831,6 +852,7 @@ void program_manager_panel(sqlite3* db)
 		}
 		else if ( answer == 5)
 		{
+			//tamam user hara be modir namayesh midahad
 			vector<customer*> customers = customerado.getallcustomer();
 			cout << "\nall users:" << endl;
 			for ( int i = 0; i < customers.size(); i++)
@@ -858,7 +880,7 @@ void program_manager_panel(sqlite3* db)
 		answer = int_eror<int>("this input is invalid sweety!, please input number" );
 	}
 }
-
+// va hala main asy va seda zadan in tabeh haye doost dashtany:))
 int main()
 {
 	sqlite3* mydb;
@@ -911,3 +933,10 @@ int main()
 	db.close();
 	return 0;
 }
+
+/*
+neveshte shode : Amirreza Sadeghmoghadam
+
+ba arezo moafaghiat baraye tamam khonandegan in code:)
+
+*/

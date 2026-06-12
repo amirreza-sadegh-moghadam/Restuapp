@@ -25,6 +25,7 @@ class data
 	private:
 		sqlite3* db;
 };
+
 class restaurantDAO
 {
 

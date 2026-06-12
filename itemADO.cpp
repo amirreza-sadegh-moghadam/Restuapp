@@ -6,6 +6,7 @@ itemDAO::itemDAO(sqlite3* db)
 {
 	this->db = db;
 }
+// id restauran ra migirad va item ra ba tavgoh be oone zakhire mikonad, id restaurant baes mishavad dar zaman sakht restauran  menu darja sokhte shavad
 void itemDAO::add_item(item* item, int res_id)
 {
 	string sql =
@@ -32,6 +33,7 @@ void itemDAO::add_item(item* item, int res_id)
         nullptr
     );
 }
+// item ra sefa bar asas id khood item midahad
 item* itemDAO::get_item(int id)
 {
 	string sql =
@@ -93,6 +95,8 @@ item* itemDAO::get_item(int id)
 
     return nullptr;
 }
+// item haye yeck restauran ra be toor komel midahad
+
 vector<item*> itemDAO::getrestaurantitem(int resid)
 {
 	vector<item*> menu;
@@ -158,6 +162,8 @@ void itemDAO::delete_item(int id)
 	sqlite3_exec(db,sql.c_str(),nullptr,nullptr,nullptr);
 	
 }
+// baghieh tabeh ha baraye update hastand
+
 void itemDAO::update_name(int id,string name)
 {
 	string sql = 

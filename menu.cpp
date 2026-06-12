@@ -4,6 +4,7 @@ using namespace std;
 menu::menu()
 {
 }
+// menu rabetehy taghriba compositon ba item darad va vaghty yeck menu pak mishavad koll item hayash pak mishavand
 menu::~menu()
 {
     for (int i = 0; i < items.size(); i++)

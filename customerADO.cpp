@@ -30,6 +30,7 @@ void customerADO::addcustomer(customer* c)
     int id = sqlite3_last_insert_rowid(db);
     c->set_id(id);
 }
+// ba gereftan id customer ra tahvil mi dahad
 customer* customerADO::getcustomer(int id)
 {
 	string sql =
@@ -57,6 +58,7 @@ customer* customerADO::getcustomer(int id)
 	sqlite3_finalize(stmt);
 	return nullptr;
 }
+// tamam customer haye barnameh ra tahvil midahad
 vector<customer*> customerADO::getallcustomer()
 {
 	vector<customer*> customers;
@@ -98,6 +100,7 @@ void customerADO::delete_customer(int id)
 	"DELETE FROM CUSTOMER WHERE id = " +  to_string(id) + ";";
 	sqlite3_exec(db,sqll.c_str(),nullptr,nullptr,nullptr);
 }
+// meghdar bedehy ra taghir midahad
 void customerADO::update_Debt(int id,double price )
 {
 	string sql =

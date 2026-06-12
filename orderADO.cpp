@@ -6,6 +6,7 @@ orderDAO::orderDAO(sqlite3* db)
 {
 	this->db = db;
 }
+// yeck sefaresh ra be datebase ezafe mikoneh
 void orderDAO::addOrder(orders* o)
 {
 	string sql =
@@ -25,6 +26,7 @@ void orderDAO::addOrder(orders* o)
 	o->set_id(order_id);
 	
 }
+//bar asas id sefaresh ra return mikonad
 orders* orderDAO::getOrder(int id)
 {
 	string sql =
@@ -57,6 +59,9 @@ orders* orderDAO::getOrder(int id)
     	sqlite3_finalize(stmt);
     	return nullptr;
 	}
+	// hala soragh model mokamel miravad va dar onja batavajoeh be id item, item ra az model item estekhraj mikonad va sepas ba tavjoeh be id  sefaresh
+	// ke dar in model zakhire shode ast, item hayre sefaresh ra be sefaresh mortabet mikonad va dar akhar tamam inha ra dar ghaleb yeck sefaresh komel
+	//ersal mikonad. tamam get kardan haye order intory sorat migirad
 	string sqll=
 	"SELECT * FROM order_items WHERE order_id = " +to_string(id)+ ";";
     sqlite3_stmt* stmt2;
@@ -81,6 +86,7 @@ orders* orderDAO::getOrder(int id)
 	return o;
 
 }
+// ba gereftan id moshtary koll sefaresh hayash ra pass midahad
 vector<orders*> orderDAO::getCustomerOrders(int customer_id)
 {
 	vector<orders*> orderha;
@@ -136,7 +142,7 @@ void orderDAO::delete_order(int id)
 	"DELETE FROM ORDERS WHERE id = " + to_string(id) + ";";
 	sqlite3_exec(db,sqll.c_str(),nullptr,nullptr,nullptr);
 }
-
+//ba gereftan id restauran koll sefaresh haye oon restauran ra midahad, chizy ke dar amarsazi va modirit restauran bekar miaiad
 vector<orders*> orderDAO::getrestaurantOrders(int rest_id)
 {
 	vector<orders*> orderha;
@@ -183,7 +189,7 @@ vector<orders*> orderDAO::getrestaurantOrders(int rest_id)
 	sqlite3_finalize(stmt);
 	return orderha;
 }
-
+// tanha sefaresh haye yeck moshtary ra midahad ke dar restraun bekhsoos ( restaurant_id ) sabt shoode bashand
 vector<orders*> orderDAO::getCustomerOrdersR(int customer_id,int restaurant_id)
 {
 	vector<orders*> orderha;
@@ -230,6 +236,7 @@ vector<orders*> orderDAO::getCustomerOrdersR(int customer_id,int restaurant_id)
 	sqlite3_finalize(stmt);
 	return orderha;
 }
+// braye taghire status sefaresh ke tavasat modir restauran sorat migirad
 void orderDAO::update_status(int id,  string status)
 {
 	string sql = 
