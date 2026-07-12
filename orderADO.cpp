@@ -10,7 +10,7 @@ orderDAO::orderDAO(sqlite3* db)
 void orderDAO::addOrder(orders* o)
 {
 	string sql =
-	"INSERT INTO ORDERS (customer_id,date,status,restaurant_id) VALUES(" +to_string(o->get_customer_id()) + "," +	to_string(o->get_date()) + ",'" +o->get_status() + "'," +to_string(o->get_rest_id()) +");";
+	"INSERT INTO ORDERS (customer_id,date,status,restaurant_id,total) VALUES(" +to_string(o->get_customer_id()) + "," +	to_string(o->get_date()) + ",'" +o->get_status() + "'," +to_string(o->get_rest_id()) +  "," + to_string(o->get_total())+");";
     sqlite3_exec(db,sql.c_str(),nullptr,nullptr,nullptr);
     int order_id =
     sqlite3_last_insert_rowid(db);
@@ -52,7 +52,9 @@ orders* orderDAO::getOrder(int id)
     	(char*)sqlite3_column_text(stmt,3);
     	int restaurant_id =
     	sqlite3_column_int(stmt,4);
-    	o = new orders(id,customer_id,date,status,restaurant_id);
+    	double total =
+    	sqlite3_column_double(stmt,5);
+    	o = new orders(id,customer_id,date,status,restaurant_id,total);
 	}
 	if(o == nullptr)
 	{
@@ -107,7 +109,9 @@ vector<orders*> orderDAO::getCustomerOrders(int customer_id)
     	(char*)sqlite3_column_text(stmt,3);
     	int restaurant_id =
     	sqlite3_column_int(stmt,4);
-     	o = new orders(order_id,customer_id,date,status,restaurant_id);
+    	double total =
+    	sqlite3_column_double(stmt,5);
+    	o = new orders(order_id,customer_id,date,status,restaurant_id,total);
      	string sqll = 
      	"SELECT * FROM order_items WHERE order_id = " +to_string(order_id)+ ";";
  		sqlite3_stmt* stmt2;
@@ -163,7 +167,9 @@ vector<orders*> orderDAO::getrestaurantOrders(int rest_id)
     	(char*)sqlite3_column_text(stmt,3);
     	int restaurant_id =
     	sqlite3_column_int(stmt,4);
-     	o = new orders(order_id,customer_id,date,status,restaurant_id);
+    	double total =
+    	sqlite3_column_double(stmt,5);
+    	o = new orders(order_id,customer_id,date,status,restaurant_id,total);
      	string sqll = 
      	"SELECT * FROM order_items WHERE order_id = " +to_string(order_id)+ ";";
  		sqlite3_stmt* stmt2;
@@ -210,7 +216,9 @@ vector<orders*> orderDAO::getCustomerOrdersR(int customer_id,int restaurant_id)
     	(char*)sqlite3_column_text(stmt,3);
     	int restaurant_id =
     	sqlite3_column_int(stmt,4);
-     	o = new orders(order_id,customer_id,date,status,restaurant_id);
+    	double total =
+    	sqlite3_column_double(stmt,5);
+    	o = new orders(order_id,customer_id,date,status,restaurant_id,total);
      	string sqll = 
      	"SELECT * FROM order_items WHERE order_id = " +to_string(order_id)+ ";";
  		sqlite3_stmt* stmt2;
