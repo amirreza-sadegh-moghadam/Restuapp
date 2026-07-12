@@ -6,12 +6,12 @@
 #include "item.h"
 #include "menu.h"
 #include <string>
-
+#include "ML.h"
 using namespace std;
 class orders
 {
 	public:
-		orders(int,int,int,string,int);
+		orders(int,int,int,string,int,double);
 		void add_item(item*);
 		void del_item(int id);
 		void show_order();
@@ -25,6 +25,9 @@ class orders
 		double total_price();
 		void set_rest_id(int);
 		int get_rest_id();
+		double get_total();
+		void set_total(double);
+
 
 	private:
 		int id;
@@ -33,11 +36,12 @@ class orders
 		int date;
 		string status;
 		int restaurant_id;
+		double total;
 
 };
 class customer{
 	public:
-		customer(int,string,double);
+		customer(int,string,double,int,MembershipLevel* );
 		~customer();
 		void set_Debt(double );
 		double get_Debt();
@@ -46,13 +50,22 @@ class customer{
 		void set_id(int);
 		void add_order(orders* );
 		double total_price();
-
+		int get_point();
+		MembershipLevel* get_level();
+		void set_level(MembershipLevel* );
+		void set_point(int);
+		void add_point(int);
+		void del_point(int);
+		void change_level();
 
 	private:
 		double Debt;
 		int id;
 		string name;
 		vector<orders*> corders;
+		int points;
+		MembershipLevel* level;
+
 };
 
 

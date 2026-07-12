@@ -80,3 +80,7 @@ void food::get_information()
 	cout<< (get_exist()? " YES " : "NO");
 	cout<<"\n"<< "description : "<<"\n"<<get_description()<<"\n";
 };
+void item::get_information()
+{
+	cout<< "||Name :" <<get_name()<<"| price : " << get_price();
+}

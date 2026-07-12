@@ -13,11 +13,11 @@ void customerADO::addcustomer(customer* c)
 {
 	string sql =
 	string("INSERT INTO CUSTOMER ")+
-    "(name,Debt) "
+    "(name,Debt,points,level) "
     "VALUES(" +
      "'" + c->get_name() + "'," +
 
-    to_string(c->get_Debt()) + 
+    to_string(c->get_Debt()) + "," + to_string(c->get_point())  +",'"+ c->get_level()->get_level() + "'"+
     ");";
 	char* errMsg = nullptr;
     int rc = sqlite3_exec(
@@ -45,9 +45,30 @@ customer* customerADO::getcustomer(int id)
         (char*)sqlite3_column_text(stmt,1);
         double Debt = 
         sqlite3_column_double(stmt,2);
+        int points = 
+        sqlite3_column_int(stmt,3);
+        string names =
+        (char*)sqlite3_column_text(stmt,4);
+        MembershipLevel* level = nullptr;
+        if ( names == "Normal")
+        {
+        	level = new NormalLevel();
+		}
+		if ( names == "Silver")
+		{
+			level = new SilverLevel();
+		}
+		if ( names == "Gold")
+		{
+			level = new GoldLevel();
+		}
+		if ( names == "VIP")
+		{
+			level = new VIPLevel();
+		}
         orderDAO orderado(db);
     	vector<orders*> orders = orderado.getCustomerOrders(id);
-        customer* s = new customer(id,name,Debt);
+        customer* s = new customer(id,name,Debt,points, level);
         for ( int i = 0; i< orders.size();i++)
         {
         	s->add_order(orders[i]);
@@ -69,14 +90,36 @@ vector<customer*> customerADO::getallcustomer()
 	orderDAO orderado(db);
 	while(sqlite3_step(stmt) == SQLITE_ROW)
 	{
+		
 		int id =
         sqlite3_column_int(stmt,0);
         string name =
         (char*)sqlite3_column_text(stmt,1);
         double Debt = 
         sqlite3_column_double(stmt,2);
-        vector<orders*> orders = orderado.getCustomerOrders(id);
-        customer* s = new customer(id,name,Debt);
+        int points = 
+        sqlite3_column_int(stmt,3);
+        string names =
+        (char*)sqlite3_column_text(stmt,4);
+        MembershipLevel* level = nullptr;
+        if ( names == "Normal")
+        {
+        	level = new NormalLevel();
+		}
+		if ( names == "Silver")
+		{
+			level = new SilverLevel();
+		}
+		if ( names == "Gold")
+		{
+			level = new GoldLevel();
+		}
+		if ( names == "VIP")
+		{
+			level = new VIPLevel();
+		}
+		        vector<orders*> orders = orderado.getCustomerOrders(id);
+        customer* s = new customer(id,name,Debt,points,level);
         for (int i = 0; i<orders.size();i++)
         {
         	s->add_order(orders[i]);
@@ -105,6 +148,20 @@ void customerADO::update_Debt(int id,double price )
 {
 	string sql =
 		"UPDATE CUSTOMER SET Debt = Debt + " + to_string(price) +" WHERE id = " + to_string(id);
+
+	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+}
+void customerADO::update_level(int id,string level)
+{
+	string sql =
+		"UPDATE CUSTOMER SET Level =  '"+ level + "' WHERE id = " + to_string(id);
+
+	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+}
+void customerADO::update_point(int id,int point )
+{
+	string sql =
+		"UPDATE CUSTOMER SET points = points + " + to_string(point) +" WHERE id = " + to_string(id);
 
 	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
 }

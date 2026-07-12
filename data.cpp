@@ -65,7 +65,7 @@ void data::create_customer()
 	" CREATE TABLE IF NOT EXISTS CUSTOMER("
 	"id INTEGER PRIMARY KEY AUTOINCREMENT,"
 	"name TEXT,"
-	"Debt REAL);";
+	"Debt REAL,points INTEGER,level TEXT);";
 	sqlite3_exec(db,customer_data,nullptr,nullptr,nullptr);
 }
 // model sefaresh ra misazad
@@ -78,6 +78,7 @@ void data::create_order()
 	"date INTEGER,"
 	"status TEXT,"
 	"restaurant_id INTEGER" 
+	",total REAL"
 	");";
 	sqlite3_exec(db,order_data,nullptr,nullptr,nullptr);
 }

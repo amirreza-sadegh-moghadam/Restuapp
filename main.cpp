@@ -16,6 +16,21 @@
 using namespace std;
 #include <limits>
 #include <iostream>
+int show_next_level ( string a)
+{
+	if ( a == "Normal")
+	{
+		return 100;
+	}
+	if ( a == "Silver")
+	{
+		return 300;
+	}
+	if ( a == "Gold")
+	{
+		return 700;
+	}
+}
 using namespace std;
 // baraye erorhandeling dar vroody haye gheir adday baraye moteghair haye adady
 template <typename T>
@@ -74,7 +89,8 @@ void customer_panel(sqlite3* db)
 		cout << "enter your name bro: ";
 		string name;
 		cin >> name;
-		customer* newcustomer = new customer(0, name, 0);
+		MembershipLevel* newcustomers = new NormalLevel();
+		customer* newcustomer = new customer(0, name, 0,0,newcustomers);
 		customerado.addcustomer(newcustomer);
 		// agar moshtary dar app ozve nabashad ba gereftan esm o, ozvsh mikonad va be oo yeck id midahad ke ba on mitavand vared shavad
 		cout << "welcome here! now you can login with your id:" << endl;
@@ -95,8 +111,19 @@ void customer_panel(sqlite3* db)
 	while (true) 
 	{
 	system("cls");
-	cout << "welcome back " << moshtary->get_name() << "!" << endl;
+	// serafa tebgh khaste project amal kardam magarnah benazar man in jaleb nist va bahtar bood ke yeck goozine toye menu mizashtim ta moshtray bere va level 
+	//information hash roe bebine
+	cout << "welcome back " << moshtary->get_name() << "!" << endl; 
+	cout<< "your level is " <<moshtary->get_level()->get_level()<<endl;
+	cout<< " your points" << moshtary->get_point()<< endl;
+	string a =  moshtary->get_level()->get_level();
+	if (a!= "VIP" )
+	{
+		cout <<" you need " << show_next_level(a) << "points";
+	}
 	int answer2;
+	// baraye mohasebeh points
+	int itemcount = 0;
 	cout << "\nwhat you gonna do now?" << endl;
 	cout << "1. New order" << endl;
 	cout << "2. show me old orders!" << endl;
@@ -146,8 +173,8 @@ void customer_panel(sqlite3* db)
 		system("cls");
 		// tarikh bar asas tarikh dasgah karbar tanzim misheh!
 		int date = get_current_date();
-		orders* newone = new orders(0, moshtary->get_id(), date, "dar hal amade sazi",choose->get_id());
-
+		orders* newone = new orders(0, moshtary->get_id(), date, "dar hal amade sazi",choose->get_id(),0);
+		
 		int answer3;
 		cout << "\n MENU:" << endl;
 		choose->show_menu();
@@ -156,7 +183,7 @@ void customer_panel(sqlite3* db)
 		cout << "3. show my order" << endl;
 		cout << "4. confirm order!" << endl;
 		answer3 = int_eror<int>("this input is invalid , please input 1 or 2 or 3 or 4" );
-
+	
 		while ( answer3 != 4)
 		{
 			if ( answer3 == 1)
@@ -172,7 +199,11 @@ void customer_panel(sqlite3* db)
 					found = choose->find_id(itemid);
 				}
 				newone->add_item(found);
+				itemcount ++;
 				cout << found->get_name() << " added to your order bro!" << "Total Price : "<<newone->total_price()<<endl;
+				double total = newone->total_price();
+				//mohasebeh gheymat takhfif dar
+				newone->set_total(total - total*moshtary->get_level()->get_discount()/100);
 				
 			}
 			else if ( answer3 == 2)
@@ -181,9 +212,11 @@ void customer_panel(sqlite3* db)
 				int itemid;
 				itemid = int_eror<int>("this input is invalid , please input number" );
 				newone->del_item(itemid);
-				cout<<" total price : "<< newone->total_price();
-			}
-			else if ( answer3 == 3)
+				double total = newone->total_price();
+				//mohasebeh gheymat takhfif dar
+				newone->set_total(total - total*moshtary->get_level()->get_discount()/100);
+			}   
+			else if (answer3 == 3)                                   
 			{
 				cout << "\nyour order : " << endl;
 				newone->show_order();
@@ -202,11 +235,30 @@ void customer_panel(sqlite3* db)
 			answer3 = int_eror<int>("this input is invalid , please input 1 or 2 or 3 or 4" );
 		}
 
-		orderado.addOrder(newone);
 		system("cls");
-		cout<< " Order ID : " << newone->get_id() << " status : " << newone->get_status();
+		cout<<"do you want delivery ( Y /N)"<<endl;
+		char deliveryanswer;
+		cin >> deliveryanswer;
+		double delivery_price =  30 - 0.3*moshtary->get_level()->ersal();
+		if ( deliveryanswer == 'Y')
+		{
+			cout<<" you get it and its  orginal price  is : 30 " <<endl  ;
+			cout<< "but you are a good customer and we give you a discount "<<endl;
+			cout<<" its price :" <<delivery_price<<endl;
+			newone->set_total(newone->get_total() + delivery_price);
+			
+		}
+		orderado.addOrder(newone);
+		cout<< " Order ID : " << newone->get_id() << " status : " << newone->get_status()<<endl;
+		int yourpoints = pointcalculator(itemcount,newone->get_total(),moshtary->get_level()->get_pointx());
+		cout<< " you get " << yourpoints<<endl<<"points"<<endl;       
+		moshtary->add_point(yourpoints);                                     
+		cout << " now you have " << moshtary->get_point() << "points"<<endl;
+		customerado.update_point(moshtary->get_id(),moshtary->get_point());
+		customerado.update_level(moshtary->get_id(),moshtary->get_level()->get_level());
+		
 		pause();
-		customerado.update_Debt(moshtary->get_id(),newone->total_price());
+		customerado.update_Debt(moshtary->get_id(),newone->get_total());
 		delete newone;
 		for ( int i = 0; i < rests.size(); i++) 
 		{
@@ -938,5 +990,5 @@ int main()
 neveshte shode : Amirreza Sadeghmoghadam
 
 ba arezo moafaghiat baraye tamam khonandegan in code:)
-
+-
 */

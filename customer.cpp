@@ -2,13 +2,15 @@
 #include <iostream>
 
 using namespace std;
-customer::customer(int id,string name,double d) : Debt (d), id(id), name(name){}
+customer::customer(int id,string name,double d,int point,MembershipLevel* level) : Debt (d), id(id), name(name), points(point), level(level)
+{}
 customer::~customer()
 {
 	for ( int i = 0; i<corders.size();i++)
 	{
 		delete corders[i];
 	}
+	delete level;
 }
 // baraye hazf item ha 
 void orders::del_item(int id)
@@ -32,7 +34,8 @@ void orders::show_order()
 	{
 		list[i]->get_information();
 	}
-	cout<<"\n"<< "payout : " << total_price()<<endl;
+	cout<< " sum of prices : " << total_price();
+	cout<<"\n"<< "payout (discount) : " << total<<endl;
 }
 void customer::set_Debt(double debt)
 {
@@ -82,7 +85,7 @@ void customer::add_order(orders* o)
 {
 	this->corders.push_back(o);
 }
-orders::orders(int id,int customer_id,int date,string status,int restaurant_id) : id(id), customer_id(customer_id),date(date), status(status),restaurant_id(restaurant_id){}
+orders::orders(int id,int customer_id,int date,string status,int restaurant_id,double total) : id(id), customer_id(customer_id),date(date), status(status),restaurant_id(restaurant_id), total(total){}
 // mablegh koly ke tamam sefaresh hara mohasebeh mikonad
 double customer::total_price()
 {
@@ -119,4 +122,67 @@ void orders::set_rest_id(int id)
 int orders::get_rest_id()
 {
 	return restaurant_id;
+}
+int customer::get_point()
+{
+	return this->points;
+}
+
+MembershipLevel* customer::get_level()
+{
+	return this->level;
+}
+void customer::set_level(MembershipLevel* level)
+{
+	this->level = level;
+}
+void customer::set_point(int points)
+{
+	this->points = points;
+}
+void customer::add_point(int point)
+{
+	points += point* level->get_pointx();
+	change_level();
+}
+void customer::del_point(int point)
+{
+	points -= point* level->get_pointx();
+	change_level();
+}
+void customer::change_level()
+{
+	if (  points < 100  && level->get_level() != "Normal")
+	{
+		delete level;
+		level = new NormalLevel();
+		cout << " now your level is Normal";
+	}	
+	else if (  points < 300 && level->get_level() != "Silver")
+	{
+		delete level;
+		level = new SilverLevel();
+		cout<< " now your level is Silver";
+		
+	}
+	else if (  points < 700  && level->get_level() != "Gold")
+	{
+		delete level;
+		level = new GoldLevel();
+		cout << " now your level is Gold";
+	}
+	else if (  level->get_level() != "VIP")
+	{
+		delete level;
+		level = new VIPLevel();
+		cout << " now your level is VIP";
+	}
+}
+double orders::get_total()
+{
+	return total;
+}
+void orders::set_total(double total)
+{
+	this->total = total;
 }

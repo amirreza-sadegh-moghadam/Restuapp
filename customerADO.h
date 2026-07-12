@@ -16,6 +16,8 @@ class customerADO
 		vector<customer*> getallcustomer();
 		void delete_customer(int id);
 		void update_Debt(int id,double price);
+		void update_level(int , string);
+		void update_point(int,int);
 	private:
 		sqlite3* db;			
 };

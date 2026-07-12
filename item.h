@@ -12,7 +12,7 @@ class item
 		string get_name();
 		string get_type();
 		string get_description();
-		virtual void get_information() = 0;
+		virtual void get_information() ;
 		int get_value();
 		int get_time();
 		bool get_exist();
@@ -46,6 +46,5 @@ class food:public item
 		food( int,string, string,double,string,int,int,bool);
 		void get_information()override;
 };
-
 
 #endif
