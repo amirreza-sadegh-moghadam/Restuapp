@@ -18,6 +18,8 @@ class customerADO
 		void update_Debt(int id,double price);
 		void update_level(int , string);
 		void update_point(int,int);
+		void update_copen(int,int);
+		void update_last_copen(int,int);
 	private:
 		sqlite3* db;			
 };

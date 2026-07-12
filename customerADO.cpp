@@ -13,11 +13,11 @@ void customerADO::addcustomer(customer* c)
 {
 	string sql =
 	string("INSERT INTO CUSTOMER ")+
-    "(name,Debt,points,level) "
+    "(name,Debt,points,level,last_copen,copen) "
     "VALUES(" +
      "'" + c->get_name() + "'," +
 
-    to_string(c->get_Debt()) + "," + to_string(c->get_point())  +",'"+ c->get_level()->get_level() + "'"+
+    to_string(c->get_Debt()) + "," + to_string(c->get_point())  +",'"+ c->get_level()->get_level() + "'," + to_string(c->get_last_copen())+ "," + to_string(c->get_copen()) +
     ");";
 	char* errMsg = nullptr;
     int rc = sqlite3_exec(
@@ -50,6 +50,10 @@ customer* customerADO::getcustomer(int id)
         string names =
         (char*)sqlite3_column_text(stmt,4);
         MembershipLevel* level = nullptr;
+        int last_copen =
+        sqlite3_column_int(stmt,5);
+        int copen = 
+        sqlite3_column_int(stmt,6);
         if ( names == "Normal")
         {
         	level = new NormalLevel();
@@ -68,7 +72,7 @@ customer* customerADO::getcustomer(int id)
 		}
         orderDAO orderado(db);
     	vector<orders*> orders = orderado.getCustomerOrders(id);
-        customer* s = new customer(id,name,Debt,points, level);
+        customer* s = new customer(id,name,Debt,points, level,last_copen,copen);
         for ( int i = 0; i< orders.size();i++)
         {
         	s->add_order(orders[i]);
@@ -102,6 +106,10 @@ vector<customer*> customerADO::getallcustomer()
         string names =
         (char*)sqlite3_column_text(stmt,4);
         MembershipLevel* level = nullptr;
+        int last_copen =
+        sqlite3_column_int(stmt,5);
+        int copen = 
+        sqlite3_column_int(stmt,6);
         if ( names == "Normal")
         {
         	level = new NormalLevel();
@@ -118,8 +126,8 @@ vector<customer*> customerADO::getallcustomer()
 		{
 			level = new VIPLevel();
 		}
-		        vector<orders*> orders = orderado.getCustomerOrders(id);
-        customer* s = new customer(id,name,Debt,points,level);
+		vector<orders*> orders = orderado.getCustomerOrders(id);
+        customer* s = new customer(id,name,Debt,points,level,last_copen,copen);
         for (int i = 0; i<orders.size();i++)
         {
         	s->add_order(orders[i]);
@@ -162,6 +170,20 @@ void customerADO::update_point(int id,int point )
 {
 	string sql =
 		"UPDATE CUSTOMER SET points = points + " + to_string(point) +" WHERE id = " + to_string(id);
+
+	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+}
+void customerADO::update_copen(int id,int copen )
+{
+	string sql =
+		"UPDATE CUSTOMER SET copen = " + to_string(copen) +" WHERE id = " + to_string(id);
+
+	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+}
+void customerADO::update_last_copen(int id, int copen)
+{
+	string sql =
+	"UPDATE CUSTOMER SET last_copen = " + to_string(copen) +" WHERE id = " + to_string(id);
 
 	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
 }

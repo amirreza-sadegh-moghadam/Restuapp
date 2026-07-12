@@ -41,7 +41,7 @@ class orders
 };
 class customer{
 	public:
-		customer(int,string,double,int,MembershipLevel* );
+		customer(int,string,double,int,MembershipLevel*,int,int);
 		~customer();
 		void set_Debt(double );
 		double get_Debt();
@@ -57,6 +57,13 @@ class customer{
 		void add_point(int);
 		void del_point(int);
 		void change_level();
+		int get_last_copen();
+		void set_last_copen(int);
+		void set_copen(int);
+		int get_copen();
+		bool copen_calculator(int );
+		string return_name();
+		
 
 	private:
 		double Debt;
@@ -65,6 +72,8 @@ class customer{
 		vector<orders*> corders;
 		int points;
 		MembershipLevel* level;
+		int last_copen; 
+		int copen;
 
 };
 

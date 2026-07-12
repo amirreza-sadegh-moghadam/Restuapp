@@ -65,7 +65,7 @@ void data::create_customer()
 	" CREATE TABLE IF NOT EXISTS CUSTOMER("
 	"id INTEGER PRIMARY KEY AUTOINCREMENT,"
 	"name TEXT,"
-	"Debt REAL,points INTEGER,level TEXT);";
+	"Debt REAL,points INTEGER,level TEXT, last_copen INTEGER, copen INTEGER);";
 	sqlite3_exec(db,customer_data,nullptr,nullptr,nullptr);
 }
 // model sefaresh ra misazad

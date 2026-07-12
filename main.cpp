@@ -90,7 +90,7 @@ void customer_panel(sqlite3* db)
 		string name;
 		cin >> name;
 		MembershipLevel* newcustomers = new NormalLevel();
-		customer* newcustomer = new customer(0, name, 0,0,newcustomers);
+		customer* newcustomer = new customer(0, name, 0,0,newcustomers,0,0);
 		customerado.addcustomer(newcustomer);
 		// agar moshtary dar app ozve nabashad ba gereftan esm o, ozvsh mikonad va be oo yeck id midahad ke ba on mitavand vared shavad
 		cout << "welcome here! now you can login with your id:" << endl;
@@ -113,10 +113,18 @@ void customer_panel(sqlite3* db)
 	system("cls");
 	// serafa tebgh khaste project amal kardam magarnah benazar man in jaleb nist va bahtar bood ke yeck goozine toye menu mizashtim ta moshtray bere va level 
 	//information hash roe bebine
-	cout << "welcome back " << moshtary->get_name() << "!" << endl; 
+	cout << "welcome back " << moshtary->get_name() <<" the " << moshtary->return_name()<< "!" << endl; 
+
 	cout<< "your level is " <<moshtary->get_level()->get_level()<<endl;
 	cout<< " your points" << moshtary->get_point()<< endl;
 	string a =  moshtary->get_level()->get_level();
+	int date = get_current_date();
+	
+	if ( moshtary->copen_calculator(date) == true )
+	{
+		customerado.update_copen(moshtary->get_id(),moshtary->get_copen());
+		customerado.update_last_copen(moshtary->get_id(),date);
+	}
 	if (a!= "VIP" )
 	{
 		cout <<" you need " << show_next_level(a) << "points";
@@ -172,7 +180,6 @@ void customer_panel(sqlite3* db)
 		}
 		system("cls");
 		// tarikh bar asas tarikh dasgah karbar tanzim misheh!
-		int date = get_current_date();
 		orders* newone = new orders(0, moshtary->get_id(), date, "dar hal amade sazi",choose->get_id(),0);
 		
 		int answer3;
@@ -248,10 +255,24 @@ void customer_panel(sqlite3* db)
 			newone->set_total(newone->get_total() + delivery_price);
 			
 		}
+		if ( moshtary->get_copen() > 0)
+		{
+			cout<< "you have" << moshtary->get_copen()<< "do you want to use it?(Y/N)"<<endl;
+			char answercopen;
+			cin>>answercopen;
+			if ( answercopen == 'Y')
+			{
+				newone->set_total(newone->get_total() * 0.8);
+				cout<<" you get a 20% :)"<<endl;
+				cout<< "your price is " << newone->get_total();
+				moshtary->set_copen(moshtary->get_copen()-1);
+				customerado.update_copen(moshtary->get_id(),moshtary->get_copen());
+			}
+		}
 		orderado.addOrder(newone);
 		cout<< " Order ID : " << newone->get_id() << " status : " << newone->get_status()<<endl;
 		int yourpoints = pointcalculator(itemcount,newone->get_total(),moshtary->get_level()->get_pointx());
-		cout<< " you get " << yourpoints<<endl<<"points"<<endl;       
+		cout<< " you get " << yourpoints<<"points"<<endl;       
 		moshtary->add_point(yourpoints);                                     
 		cout << " now you have " << moshtary->get_point() << "points"<<endl;
 		customerado.update_point(moshtary->get_id(),moshtary->get_point());
