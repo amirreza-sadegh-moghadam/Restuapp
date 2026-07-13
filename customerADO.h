@@ -1,6 +1,7 @@
 #ifndef CUSTOMERADO_H
 #define CUSTOMERADO_H
 
+#include <string>
 #include "customer.h"
 #include <vector>
 extern "C"{
@@ -24,4 +25,13 @@ class customerADO
 		sqlite3* db;			
 };
 
+class logado
+{
+	public:
+		logado(sqlite3*);
+		void addlog(int,string,string,int);
+		void show_log();
+	private:
+		sqlite3* db;
+};
 #endif

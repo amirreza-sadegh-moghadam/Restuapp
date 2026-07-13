@@ -1,7 +1,6 @@
 #include "customer.h"
 #include <iostream>
 
-
 using namespace std;
 customer::customer(int id,string name,double d,int point,MembershipLevel* level,int last_copen,int copen) : Debt (d), id(id), name(name), points(point), level(level),last_copen(last_copen),copen(copen)
 {}
@@ -140,15 +139,18 @@ void customer::set_level(MembershipLevel* level)
 void customer::set_point(int points)
 {
 	this->points = points;
+	change_level();
 }
 void customer::add_point(int point)
 {
-	points += point* level->get_pointx();
+	// Dar matn project oomadahe ke admin bayad betoone dar soorat adam failiat sateh roe beyare paeen, hala man alave bar oone kahat outomatic kardamesh  ke dar sorat faliat mojadad
+	// dobare be sateh ghably bargarde!, choon tavabeh add , del roe seda mizanim
+	points += point;
 	change_level();
 }
 void customer::del_point(int point)
 {
-	points -= point* level->get_pointx();
+	points -= point ;
 	change_level();
 }
 void customer::change_level()
@@ -159,20 +161,20 @@ void customer::change_level()
 		level = new NormalLevel();
 		cout << " now your level is Normal";
 	}	
-	else if (  points < 300 && level->get_level() != "Silver")
+	else if (points > 99 && points < 300 && level->get_level() != "Silver")
 	{
 		delete level;
 		level = new SilverLevel();
 		cout<< " now your level is Silver";
 		
 	}
-	else if (  points < 700  && level->get_level() != "Gold")
+	else if ( points > 299&& points < 700  && level->get_level() != "Gold")
 	{
 		delete level;
 		level = new GoldLevel();
 		cout << " now your level is Gold";
 	}
-	else if (  level->get_level() != "VIP")
+	else if ( points > 699&& level->get_level() != "VIP")
 	{
 		delete level;
 		level = new VIPLevel();

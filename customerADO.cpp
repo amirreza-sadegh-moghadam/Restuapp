@@ -169,7 +169,7 @@ void customerADO::update_level(int id,string level)
 void customerADO::update_point(int id,int point )
 {
 	string sql =
-		"UPDATE CUSTOMER SET points = points + " + to_string(point) +" WHERE id = " + to_string(id);
+		"UPDATE CUSTOMER SET points =  " + to_string(point) +" WHERE id = " + to_string(id);
 
 	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
 }
@@ -186,4 +186,53 @@ void customerADO::update_last_copen(int id, int copen)
 	"UPDATE CUSTOMER SET last_copen = " + to_string(copen) +" WHERE id = " + to_string(id);
 
 	sqlite3_exec(db, sql.c_str(), NULL, NULL, NULL);
+}
+
+void logado::addlog(int customer_id, string oldlevel, string newlevel, int date)
+{
+    string sql =
+    string("INSERT INTO LEVEL_LOG ") +
+    "(customer_id, old, new, date) "
+    "VALUES(" +
+    to_string(customer_id) + "," +
+    "'" + oldlevel + "'," +
+    "'" + newlevel + "'," +
+    to_string(date) +
+    ");";
+    sqlite3_exec(db,sql.c_str(),nullptr,nullptr,nullptr);
+
+}
+// choon serfa mikhastim chop konim taghirat roe , ba yeck tabeh ke chop kone kar roe jameh kardim
+void logado::show_log()
+{
+    string sql =
+    "SELECT customer_id, old, new, date "
+    "FROM LEVEL_LOG "
+    "ORDER BY date DESC;";
+    sqlite3_stmt* stmt;
+    sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, nullptr);
+
+    while (sqlite3_step(stmt) == SQLITE_ROW)
+    {
+        int customer_id =
+        sqlite3_column_int(stmt,0);
+        string old =
+        (char*)sqlite3_column_text(stmt,1);
+        string newl =
+        (char*)sqlite3_column_text(stmt,2);
+
+        int date =
+        sqlite3_column_int(stmt,3);
+	
+        cout << "Customer ID : " << customer_id
+             << " | " << old
+             << " -> " << newl
+             << " | Date : " << date << endl;
+    }
+    
+    sqlite3_finalize(stmt);
+}
+logado::logado(sqlite3* db)
+{
+	this-> db = db;
 }

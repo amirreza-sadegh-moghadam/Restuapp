@@ -58,6 +58,17 @@ void data::create_item()
 	"time INTEGER);";
 	sqlite3_exec(db,item_data,nullptr,nullptr,nullptr);
 }
+void data::create_Log()
+{
+	const char* Log =
+	" CREATE TABLE IF NOT EXISTS LEVEL_LOG("
+	"id INTEGER PRIMARY KEY AUTOINCREMENT,"
+	"customer_id INTEGER,"
+	"old TEXT,"
+	"new TEXT,"
+	"date INTEGER);";
+	sqlite3_exec(db,Log,nullptr,nullptr,nullptr);
+}
 //model customer ra misazad
 void data::create_customer()
 {

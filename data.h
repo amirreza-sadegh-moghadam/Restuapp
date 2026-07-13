@@ -21,7 +21,7 @@ class data
 		void create_order();
 		void create_item();
 		void create_order_item();
-		
+		void create_Log();
 	private:
 		sqlite3* db;
 };
@@ -41,6 +41,7 @@ class restaurantDAO
 		void update_status(int id, bool status);
 		void update_description(int id, string description);
 		void update_location(int id, string location);
+		
     private:
     
     	sqlite3* db;
