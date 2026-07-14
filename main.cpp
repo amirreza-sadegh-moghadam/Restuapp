@@ -269,18 +269,26 @@ void customer_panel(sqlite3* db)
 				customerado.update_copen(moshtary->get_id(),moshtary->get_copen());
 			}
 		}
+		pause();
+		system("cls");
 		orderado.addOrder(newone);
-		cout<< " Order ID : " << newone->get_id() << " status : " << newone->get_status()<<endl;
+		// chap factory ke matn project behesh takid dosht
+		cout<< " Order ID : " << newone->get_id() << " status : " << newone->get_status()<< " price : " << newone->get_total()<<endl;
 		string old = moshtary->get_level()->get_level();
 		int yourpoints = pointcalculator(itemcount,newone->get_total(),moshtary->get_level()->get_pointx());
-		cout<< " you get " << yourpoints<<"points"<<endl;       
+		if (deliveryanswer == 'Y')
+		{
+		cout<< "Delivery :" << delivery_price<<endl;
+		}
+		cout<<"points : "<< yourpoints<<endl;       
+		cout<<"level  discount : " <<moshtary->get_level()->get_discount()<<"%"<<endl;
+		cout<<"totally price ( with discount)" << newone->get_total()<<endl;
 		moshtary->add_point(yourpoints);            
 		if( old != moshtary->get_level()->get_level())
 		{
 			logado logdo(db);
 			logdo.addlog(moshtary->get_id(),old,moshtary->get_level()->get_level(),date);
 		}                         
-		cout << " now you have " << moshtary->get_point() << "points"<<endl;
 		customerado.update_point(moshtary->get_id(),moshtary->get_point());
 		customerado.update_level(moshtary->get_id(),moshtary->get_level()->get_level());
 		
