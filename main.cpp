@@ -90,7 +90,7 @@ void customer_panel(sqlite3* db)
 		string name;
 		cin >> name;
 		MembershipLevel* newcustomers = new NormalLevel();
-		customer* newcustomer = new customer(0, name, 0,0,newcustomers,0,0);
+		customer* newcustomer = new customer(0, name, 0,0,newcustomers);
 		customerado.addcustomer(newcustomer);
 		// agar moshtary dar app ozve nabashad ba gereftan esm o, ozvsh mikonad va be oo yeck id midahad ke ba on mitavand vared shavad
 		cout << "welcome here! now you can login with your id:" << endl;
@@ -113,18 +113,10 @@ void customer_panel(sqlite3* db)
 	system("cls");
 	// serafa tebgh khaste project amal kardam magarnah benazar man in jaleb nist va bahtar bood ke yeck goozine toye menu mizashtim ta moshtray bere va level 
 	//information hash roe bebine
-	cout << "welcome back " << moshtary->get_name() <<" the " << moshtary->return_name()<< "!" << endl; 
-
+	cout << "welcome back " << moshtary->get_name() << "!" << endl; 
 	cout<< "your level is " <<moshtary->get_level()->get_level()<<endl;
 	cout<< " your points" << moshtary->get_point()<< endl;
 	string a =  moshtary->get_level()->get_level();
-	int date = get_current_date();
-	
-	if ( moshtary->copen_calculator(date) == true )
-	{
-		customerado.update_copen(moshtary->get_id(),moshtary->get_copen());
-		customerado.update_last_copen(moshtary->get_id(),date);
-	}
 	if (a!= "VIP" )
 	{
 		cout <<" you need " << show_next_level(a) << "points";
@@ -180,6 +172,7 @@ void customer_panel(sqlite3* db)
 		}
 		system("cls");
 		// tarikh bar asas tarikh dasgah karbar tanzim misheh!
+		int date = get_current_date();
 		orders* newone = new orders(0, moshtary->get_id(), date, "dar hal amade sazi",choose->get_id(),0);
 		
 		int answer3;
@@ -244,16 +237,10 @@ void customer_panel(sqlite3* db)
 
 		system("cls");
 		cout<<"do you want delivery ( Y /N)"<<endl;
-		string deliveryanswer;
-		cin.ignore(numeric_limits<streamsize>::max(), '\n');
-		getline(cin,deliveryanswer);
+		char deliveryanswer;
+		cin >> deliveryanswer;
 		double delivery_price =  30 - 0.3*moshtary->get_level()->ersal();
-		while ( deliveryanswer != "Y"  && deliveryanswer != "N")
-		{
-			cout<< " invalide, please input 'Y' or 'N'"<<endl;
-			getline(cin,deliveryanswer);
-		}
-		if ( deliveryanswer == "Y")
+		if ( deliveryanswer == 'Y')
 		{
 			cout<<" you get it and its  orginal price  is : 30 " <<endl  ;
 			cout<< "but you are a good customer and we give you a discount "<<endl;
@@ -261,46 +248,12 @@ void customer_panel(sqlite3* db)
 			newone->set_total(newone->get_total() + delivery_price);
 			
 		}
-		if ( moshtary->get_copen() > 0)
-		{
-			cout<< "you have" << moshtary->get_copen()<< "do you want to use it?(Y/N)"<<endl;
-			string answercopen;
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-			getline(cin,answercopen);
-			while ( answercopen != "N" && answercopen != "Y")
-			{
-				cout<<" please only input N or Y"<<endl;
-				getline(cin,answercopen);
-			}
-			if ( answercopen == "N")
-			{
-				newone->set_total(newone->get_total() * 0.8);
-				cout<<" you get a 20% :)"<<endl;
-				cout<< "your price is " << newone->get_total();
-				moshtary->set_copen(moshtary->get_copen()-1);
-				customerado.update_copen(moshtary->get_id(),moshtary->get_copen());
-			}
-		}
-		pause();
-		system("cls");
 		orderado.addOrder(newone);
-		// chap factory ke matn project behesh takid dosht
-		cout<< " Order ID : " << newone->get_id() << " status : " << newone->get_status()<< " price : " << newone->get_total()<<endl;
-		string old = moshtary->get_level()->get_level();
+		cout<< " Order ID : " << newone->get_id() << " status : " << newone->get_status()<<endl;
 		int yourpoints = pointcalculator(itemcount,newone->get_total(),moshtary->get_level()->get_pointx());
-		if (deliveryanswer == "Y")
-		{
-		cout<< "Delivery :" << delivery_price<<endl;
-		}
-		cout<<"points : "<< yourpoints<<endl;       
-		cout<<"level  discount : " <<moshtary->get_level()->get_discount()<<"%"<<endl;
-		cout<<"totally price ( with discount)" << newone->get_total()<<endl;
-		moshtary->add_point(yourpoints);            
-		if( old != moshtary->get_level()->get_level())
-		{
-			logado logdo(db);
-			logdo.addlog(moshtary->get_id(),old,moshtary->get_level()->get_level(),date);
-		}                         
+		cout<< " you get " << yourpoints<<endl<<"points"<<endl;       
+		moshtary->add_point(yourpoints);                                     
+		cout << " now you have " << moshtary->get_point() << "points"<<endl;
 		customerado.update_point(moshtary->get_id(),moshtary->get_point());
 		customerado.update_level(moshtary->get_id(),moshtary->get_level()->get_level());
 		
@@ -771,7 +724,6 @@ void restaurant_manager_panel(sqlite3* db)
 		}
 		else if ( answer == 8)
 		{
-			customerADO customerado(db);
 			//dar inja modir restauran mitavand vazeeiat sefaresh ha ra taghir bedahad
 			vector <orders*> orderha = orderado.getrestaurantOrders(rest_id);
 			for ( int i = 0; i< orderha.size();i++)
@@ -781,45 +733,23 @@ void restaurant_manager_panel(sqlite3* db)
 			cout <<" choose order : ";
 			int order_id;
 			int flag = 0;
-			int z;
 			do
 			{
 				 order_id = int_eror<int>("this input is invalid sweety!, please input number" );
 				for ( int i = 0; i<orderha.size();i++)
 				{
 					if ( orderha[i]->get_id() == order_id)
-					{
-					
 						flag = 1;
-						z = i;
-						break;
-					}
 				}
 			}while ( flag == 0 );
 			string status;
 			cout<< "input new status : "<<endl;
-			cout<< " if you want to cancel some order input canceled"<<endl;
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 			getline(cin,status);
-			if (status == "canceled")
-			{
-				customer* customerma = customerado.getcustomer(orderha[z]->get_customer_id());
-				string old= customerma->get_level()->get_level();
-				int itemcount = orderha[z]->get_items().size();
-				customerma->del_point(pointcalculator(itemcount,orderha[z]->get_total(),customerma->get_level()->get_pointx()));
-				customerado.update_point(customerma->get_id(),customerma->get_point());
-				customerado.update_level(customerma->get_id(),customerma->get_level()->get_level());
-				if ( old != customerma->get_level()->get_level() )
-				{
-					logado  logdo(db);
-					logdo.addlog(customerma->get_id(),old,customerma->get_level()->get_level(),get_current_date());
-				}
-				delete customerma;
-			}
-			
 			orderado.update_status(order_id,status);
 			for ( int i =0; i<orderha.size();i++)
 				delete orderha[i]; 
+			orderha = orderado.getrestaurantOrders(rest_id);
 		}
 			
 		else
@@ -856,36 +786,19 @@ void program_manager_panel(sqlite3* db)
 	cout << "3. turning on the restaurant" << endl;
 	cout << "4. turning off the restaurant" << endl;
 	cout << "5. show all users" << endl;
-	cout<< "6.change  level of user"<<endl;
-	cout<<"7.see level log"<<endl;
-	cout << "8. exit" << endl;
+	cout << "6. exit" << endl;
 	 answer = int_eror<int>("this input is invalid sweety!, please input number" );
 
-	while ( answer != 8)
+	while ( answer != 6)
 	{
 		if ( answer == 1)
 		{
-			vector<customer*> customerss= customerado.getallcustomer();
 			vector<restaurant*> rests = restdao.getallrestaurants();
 			//tedad sefaresh hay kol
 			int ORs = 0;
 			//  mablagh sefaresh haye kol
 			int payoutas = 0;
 			cout << "we have " << rests.size() << " restaurants in system " << endl;
-			// shomaresh level ha!
-			int normal = 0,vip = 0,gold = 0,silver = 0;
-
-			for ( int m = 0; m<customerss.size();m++)
-				{
-					if ( customerss[m]->get_level()->get_level() == "Normal" )
-						normal++;
-					if ( customerss[m]->get_level()->get_level() == "Silver" )
-						silver++;
-					if ( customerss[m]->get_level()->get_level() == "Gold" )
-						gold++;
-					if ( customerss[m]->get_level()->get_level() == "VIP" )
-						vip++;	
-				}
 			for ( int i = 0; i < rests.size(); i++) 
 			{
 				//tedad sefaresh haye har restauran
@@ -895,14 +808,13 @@ void program_manager_panel(sqlite3* db)
 					vector <orders*> order_r = orderdao.getrestaurantOrders(rests[i]->get_id());
 					for ( int z = 0; z <order_r.size();z++)
 					{
-						payouta += order_r[z]->get_total();
+						payouta += order_r[z]->total_price();
 						OR +=1;
 					}
 					// dar inja sefaresh ha va mablagh har restauran ra jooda namayesh midihad
 				cout<<"Name : " << rests[i]->get_name() << " Count of orders :  " << OR << " all the payouts : " << payouta<<endl;
 				payoutas += payouta;
 				ORs += OR;
-				
 				for ( int i=0; i<order_r.size();i++)
 				{
 					delete order_r[i];
@@ -912,20 +824,10 @@ void program_manager_panel(sqlite3* db)
 			cout << "Overall Statistics " <<  endl;
 			cout<< "Total orders : " << ORs<<endl;
 			cout<< "Total payout : "<<payoutas<<endl;
-			cout<<"----level information----"<<endl;
-			cout<< " normal user : " <<normal<<endl;
-			cout<<" silver user : " << silver<<endl;
-			cout<<" gold user : " << gold<<endl;
-			cout<<" vip user : "<< vip<<endl;
 			for ( int i = 0; i < rests.size(); i++) 
 			{
 				delete rests[i];
 			}
-			for(int i=0;i<customerss.size();i++)
-			{
-				delete customerss[i];
-			}
-			
 		}
 		else if ( answer == 2)
 		{
@@ -1016,116 +918,6 @@ void program_manager_panel(sqlite3* db)
 			delete customers[i];
 			}
 		}
-		else if (answer == 6)
-		{
-			//tamam user hara be modir namayesh midahad
-			vector<customer*> customers = customerado.getallcustomer();
-			cout << "\nall users:" << endl;
-			for ( int i = 0; i < customers.size(); i++)
-			{
-				cout << "id: " << customers[i]->get_id()
-					 << " | name: " << customers[i]->get_name()
-					 << " | points: " << customers[i]->get_point() << endl
-					 <<"| level :" << customers[i]->get_level()->get_level()<<endl;
-			}
-			cout<< "what user do you want to change?"<<endl;
-			int userid;
-			int flagg = 0;
-			while ( flagg == 0)
-			{
-				cin >> userid;
-				userid = int_eror<int>("please input numbers" );
-				for ( int i = 0; i<customers.size();i++)
-				{
-					if ( userid == customers[i]->get_id())
-					{
-						// peyda mishe va hala bahash kar mikonim
-						userid = i;
-						flagg = 1;
-						break;
-					}
-					if ( i == customers.size()-1)
-					{
-					cout<< " we dont have this user!"<<endl;
-					}
-				}
-				
-				
-			}
-			cout<< " what you whant to change ? "<<endl;
-			cout<<"1.point";
-			cout<<"2.level"<<endl;
-			int manageranswer;
-			manageranswer = int_eror<int>("this input is invalid !, please input number" );
-			while (manageranswer != 1 && manageranswer != 2)
-			{
-				int_eror<int>("this input is invalid !, please input number 2 or 1" );
-			}
-			if (manageranswer == 1)
-			{
-				cout<< "  points  of this user :"<<customers[userid]->get_point()<<endl;
-				cout<< " please input the new point "<<endl;
-				int newpoint;
-				newpoint = int_eror<int>("this input is invalid !, please input number" );
-				string old = customers[userid]->get_level()->get_level();
-				customers[userid]->set_point(newpoint);
-				customerado.update_point(customers[userid]->get_id(),newpoint);
-				customerado.update_level(customers[userid]->get_id(),customers[userid]->get_level()->get_level());
-				if (old != customers[userid]->get_level()->get_level())
-				{
-					logado logdo(db);
-					logdo.addlog(customers[userid]->get_id(),old,customers[userid]->get_level()->get_level(),get_current_date());
-				}
-				cout<< "  done fine!"<<endl;
-			}
-			if (manageranswer == 2)
-			{
-				cout<< "level of this user "<<customers[userid]->get_level()->get_level()<<endl;
-				cout<< " plese input the new level "<<endl;
-				// tebgh matn project modir mitoneh avaz koneh level ro va in motineh khalaf point ha basheh!
-				cout<<"just input Normal,Silver,Gold,VIP";
-				string levelanswer;
-				cin.ignore(numeric_limits<streamsize>::max(), '\n');
-				getline(cin,levelanswer);
-				while ( levelanswer != "Normal" && levelanswer !="Silver" && levelanswer != "Gold" && levelanswer != "VIP")
-				{
-					cout<<" invalid input, just input Normal,Silver,Gold,VIP"<<endl;
-					cin.ignore(numeric_limits<streamsize>::max(), '\n');
-					getline(cin,levelanswer);
-				}
-				string oldi = customers[userid]->get_level()->get_level();
-				MembershipLevel* temp = nullptr;
-				if ( levelanswer == "Normal")
-					temp = new NormalLevel();
-				if ( levelanswer == "Silver")
-					temp = new SilverLevel();
-				if ( levelanswer == "Gold" )
-					temp = new GoldLevel();
-				if( levelanswer == "VIP")
-					temp = new VIPLevel();
-				customers[userid]->set_level(temp);
-				if (oldi != customers[userid]->get_level()->get_level())
-				{
-					logado logdo(db);
-					logdo.addlog(customers[userid]->get_id(),oldi,customers[userid]->get_level()->get_level(),get_current_date());
-				}
-				customerado.update_level(customers[userid]->get_id(),levelanswer);
-				cout<< " done fine!";
-				
-			}
-			
-		
-			
-			for ( int i = 0; i < customers.size(); i++) 
-			{
-			delete customers[i];
-			}
-		}
-		else if (answer == 7)
-		{
-			logado logdo(db);
-			logdo.show_log();
-		}
 		else
 		{
 			cout << "this input is invalid sweety!" << endl;
@@ -1136,9 +928,7 @@ void program_manager_panel(sqlite3* db)
 		cout << "3. turning on the restaurant" << endl;
 		cout << "4. turning off the restaurant" << endl;
 		cout << "5. show all users" << endl;
-		cout<< "6.change level of user"<<endl;
-		cout << "7. see level log" << endl;
-		cout<< "8.exist"<<endl;
+		cout << "6. exit" << endl;
 		answer = int_eror<int>("this input is invalid sweety!, please input number" );
 	}
 }
@@ -1154,7 +944,6 @@ int main()
 	db.create_customer();
 	db.create_order();
 	db.create_order_item();
-	db.create_Log();
 
 	cout << "welcome to restuapp!" << "\n";
 	cout << "Who you are?" << endl;
