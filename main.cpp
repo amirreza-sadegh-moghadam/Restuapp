@@ -244,10 +244,16 @@ void customer_panel(sqlite3* db)
 
 		system("cls");
 		cout<<"do you want delivery ( Y /N)"<<endl;
-		char deliveryanswer;
-		cin >> deliveryanswer;
+		string deliveryanswer;
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
+		getline(cin,deliveryanswer);
 		double delivery_price =  30 - 0.3*moshtary->get_level()->ersal();
-		if ( deliveryanswer == 'Y')
+		while ( deliveryanswer != "Y"  && deliveryanswer != "N")
+		{
+			cout<< " invalide, please input 'Y' or 'N'"<<endl;
+			getline(cin,deliveryanswer);
+		}
+		if ( deliveryanswer == "Y")
 		{
 			cout<<" you get it and its  orginal price  is : 30 " <<endl  ;
 			cout<< "but you are a good customer and we give you a discount "<<endl;
@@ -258,9 +264,15 @@ void customer_panel(sqlite3* db)
 		if ( moshtary->get_copen() > 0)
 		{
 			cout<< "you have" << moshtary->get_copen()<< "do you want to use it?(Y/N)"<<endl;
-			char answercopen;
-			cin>>answercopen;
-			if ( answercopen == 'Y')
+			string answercopen;
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+			getline(cin,answercopen);
+			while ( answercopen != "N" && answercopen != "Y")
+			{
+				cout<<" please only input N or Y"<<endl;
+				getline(cin,answercopen);
+			}
+			if ( answercopen == "N")
 			{
 				newone->set_total(newone->get_total() * 0.8);
 				cout<<" you get a 20% :)"<<endl;
@@ -276,7 +288,7 @@ void customer_panel(sqlite3* db)
 		cout<< " Order ID : " << newone->get_id() << " status : " << newone->get_status()<< " price : " << newone->get_total()<<endl;
 		string old = moshtary->get_level()->get_level();
 		int yourpoints = pointcalculator(itemcount,newone->get_total(),moshtary->get_level()->get_pointx());
-		if (deliveryanswer == 'Y')
+		if (deliveryanswer == "Y")
 		{
 		cout<< "Delivery :" << delivery_price<<endl;
 		}
@@ -1022,6 +1034,7 @@ void program_manager_panel(sqlite3* db)
 			while ( flagg == 0)
 			{
 				cin >> userid;
+				userid = int_eror<int>("please input numbers" );
 				for ( int i = 0; i<customers.size();i++)
 				{
 					if ( userid == customers[i]->get_id())
@@ -1043,18 +1056,17 @@ void program_manager_panel(sqlite3* db)
 			cout<<"1.point";
 			cout<<"2.level"<<endl;
 			int manageranswer;
-			cin >>manageranswer;
+			manageranswer = int_eror<int>("this input is invalid !, please input number" );
 			while (manageranswer != 1 && manageranswer != 2)
 			{
-				cout<< "please input 1 or 2"<<endl;
-				cin>>manageranswer;
+				int_eror<int>("this input is invalid !, please input number 2 or 1" );
 			}
 			if (manageranswer == 1)
 			{
 				cout<< "  points  of this user :"<<customers[userid]->get_point()<<endl;
 				cout<< " please input the new point "<<endl;
 				int newpoint;
-				cin>> newpoint;
+				newpoint = int_eror<int>("this input is invalid !, please input number" );
 				string old = customers[userid]->get_level()->get_level();
 				customers[userid]->set_point(newpoint);
 				customerado.update_point(customers[userid]->get_id(),newpoint);
